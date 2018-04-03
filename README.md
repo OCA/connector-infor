@@ -7,7 +7,6 @@
 This repository hosts all the Odoo modules to integrate it with Infor (http://www.infor.com)
 
 [//]: # (addons)
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
 [//]: # (end addons)
 
 Translation Status
