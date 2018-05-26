@@ -19,16 +19,28 @@ class InforBackend(models.Model):
     component_id = fields.Char(string='Component ID')
     confirmation_code = fields.Char(string='Confirmation Code')
     accounting_entity_id = fields.Char(string='Accounting Entity ID')
+    type = fields.Selection(
+        [('sql', 'SQL'), ('file', 'File')],
+        string='Type',
+        default='sql',
+        required=True,
+    )
     dbsource_id = fields.Many2one(
         comodel_name='base.external.dbsource',
         string='DB Source',
-        required=True,
+    )
+    file_backend_id = fields.Many2one(
+        comodel_name='file.backend',
+        string='File Backend',
     )
 
     @api.multi
     def test_infor_connnection(self):
         self.ensure_one()
-        self.dbsource_id.connection_test()
+        if self.type == 'sql':
+            self.dbsource_id.connection_test()
+        else:
+            self.file_backend_id.sftp_connnection_test()
         return True
 
     @api.multi

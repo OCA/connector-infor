@@ -9,7 +9,11 @@
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "category": "Connector",
     "website": "https://github.com/OCA/connector_infor",
-    "depends": ["connector", "base_external_dbsource_mysql"],
+    "depends": [
+        "connector",
+        "base_external_dbsource_mysql",
+        "connector_file",
+    ],
     "data": [
         "security/connector_security.xml",
         "security/ir.model.access.csv",

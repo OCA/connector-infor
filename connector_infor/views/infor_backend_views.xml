@@ -21,7 +21,9 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="dbsource_id"/>
+                        <field name="type"/>
+                        <field name="dbsource_id" attrs="{'required': [('type', '=', 'sql')], 'invisible': [('type', '!=', 'sql')]}"/>
+                        <field name="file_backend_id" attrs="{'required': [('type', '=', 'file')], 'invisible': [('type', '!=', 'file')]}"/>
                     </group>
                     <notebook>
                         <page string="Message Headers" name="message">
