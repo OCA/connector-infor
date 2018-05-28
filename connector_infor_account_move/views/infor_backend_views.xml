@@ -23,8 +23,8 @@
                         <form string="Custom Field">
                             <group>
                                 <group>
-                                    <field name="Name"/>
-                                    <field name="type"/>
+                                    <field name="name"/>
+                                    <field name="field_type"/>
                                     <field name="data_type"/>
                                     <field name="field_value" attrs="{'invisible': [('data_type', '!=', 'static')]}"/>
                                 </group>
@@ -35,8 +35,8 @@
                             </group>
                         </form>
                         <tree string="Custom Field">
-                            <field name="Name"/>
-                            <field name="type"/>
+                            <field name="name"/>
+                            <field name="field_type"/>
                             <field name="data_type"/>
                             <field name="field_value"/>
                             <field name="field_default_value"/>

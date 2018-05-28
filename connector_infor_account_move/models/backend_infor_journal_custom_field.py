@@ -8,8 +8,8 @@ class BackendInforJournalCustomField(models.Model):
     _name = 'backend.infor.journal.custom.field'
     _description = 'Backend Infor Journal Custom Field'
 
-    Name = fields.Char(string='Name')
-    type = fields.Selection(
+    name = fields.Char(string='Name')
+    field_type = fields.Selection(
         [('dimensioncode', 'DimensionCode'), ('property', 'Property')],
         string='Type',
     )
