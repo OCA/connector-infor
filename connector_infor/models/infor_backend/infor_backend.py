@@ -56,6 +56,7 @@ class InforBackend(models.Model):
             connection = self.dbsource_id.connection_open_mysql()
             self.dbsource_id.execute(sql, execute_params, False)
         except Exception as err:
+            self.cr.rollback()
             _logger.info("Exception details\n\n%s", err)
         finally:
             connection.close()
