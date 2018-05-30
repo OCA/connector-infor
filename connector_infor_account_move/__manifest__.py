@@ -10,6 +10,7 @@
     "category": "Connector",
     "website": "https://github.com/OCA/connector_infor",
     "depends": [
+        "account",
         "connector_infor",
         "queue_job",
     ],
