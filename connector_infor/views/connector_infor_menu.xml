@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<odoo>
+<!-- Copyright 2018 Open Source Integrators
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <menuitem id="menu_infor_backends"
+        parent="connector.menu_connector"
+        name="Infor Backends"
+        action="action_infor_backend"
+        sequence="22"/>
+</odoo>
