@@ -98,17 +98,20 @@ class AccountInvoice(models.Model):
         template = Template(body_template)
         today = fields.Datetime.now(pytz.timezone('GMT'))
         for invoice in self:
-            move = invoice.move_id
-            move_lines = move.line_ids.filtered(lambda x: x.credit or x.debit)
-            b = template.render(
-                CREATE_DATE=today,
-                INVOICE_ID=invoice.id,
-                INVOICE_NUMBER=invoice.number,
-                ACCOUNTING_ENTITY_ID=move.id,
-                JOURNAL_CODE=move.journal_id.code,
-                SEC_CURRENCY=move.currency_id.name,
-                COMPANY_CURRENCY=move.company_id.currency_id.name,
-                JOURNAL_LINES=move_lines,
-            )
+            # Only applicable for Vendor bills
+            if invoice.type == 'in_invoice':
+                move = invoice.move_id
+                move_lines = move.line_ids.filtered(
+                    lambda x: x.credit or x.debit)
+                b = template.render(
+                    CREATE_DATE=today,
+                    INVOICE_ID=invoice.id,
+                    INVOICE_NUMBER=invoice.number,
+                    ACCOUNTING_ENTITY_ID=move.id,
+                    JOURNAL_CODE=move.journal_id.code,
+                    SEC_CURRENCY=move.currency_id.name,
+                    COMPANY_CURRENCY=move.company_id.currency_id.name,
+                    JOURNAL_LINES=move_lines,
+                )
         res = super(AccountInvoice, self).invoice_validate()
         return res
