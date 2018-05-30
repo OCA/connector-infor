@@ -3,9 +3,20 @@
 <!-- Copyright 2018 Open Source Integrators
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 
-    <menuitem id="menu_infor_backends"
-        parent="connector.menu_connector"
-        name="Infor Backends"
+    <menuitem id="menu_infor"
+        parent="connector.menu_connector_root"
+        name="Infor"/>
+
+    <menuitem id="menu_infor_backend"
+        parent="menu_infor"
+        name="Backends"
         action="action_infor_backend"
-        sequence="22"/>
+        sequence="30"/>
+
+    <menuitem id="menu_infor_message"
+        parent="menu_infor"
+        name="Messages"
+        action="action_infor_message"
+        sequence="30"/>
+
 </odoo>

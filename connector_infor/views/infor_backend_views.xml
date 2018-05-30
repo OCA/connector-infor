@@ -19,6 +19,9 @@
                     string="Insert record"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                      <button type="object" class="oe_stat_button" id="infor_messages_button" icon="fa-envelope" name="action_view_infor_messages">Messages</button>
+                    </div>
                     <group>
                         <field name="name"/>
                         <field name="type"/>

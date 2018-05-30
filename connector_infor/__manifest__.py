@@ -18,6 +18,7 @@
         "security/connector_security.xml",
         "security/ir.model.access.csv",
         "views/infor_backend_views.xml",
+        "views/infor_message_views.xml",
         "views/connector_infor_menu.xml",
     ],
     "installable": True,
