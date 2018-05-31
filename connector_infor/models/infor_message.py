@@ -1,7 +1,7 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class InforMessage(models.Model):
@@ -29,5 +29,11 @@ class InforMessage(models.Model):
         readonly=True,
     )
     content = fields.Text(readonly=True)
+
+    @api.model
+    def create(self, vals):
+        seq = self.env['ir.sequence']
+        vals['message_ident'] = seq.next_by_code('infor.message')
+        return super().create(vals)
 
     # TODO on new, trigger export?

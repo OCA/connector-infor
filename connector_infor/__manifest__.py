@@ -20,6 +20,7 @@
         "views/infor_backend_views.xml",
         "views/infor_message_views.xml",
         "views/connector_infor_menu.xml",
+        "data/ir_sequence.xml",
     ],
     "installable": True,
 }
