@@ -24,9 +24,9 @@
                     </div>
                     <group>
                         <field name="name"/>
-                        <field name="type"/>
-                        <field name="dbsource_id" attrs="{'required': [('type', '=', 'sql')], 'invisible': [('type', '!=', 'sql')]}"/>
-                        <field name="file_backend_id" attrs="{'required': [('type', '=', 'file')], 'invisible': [('type', '!=', 'file')]}"/>
+                        <field name="exchange_type"/>
+                        <field name="dbsource_id" attrs="{'required': [('exchange_type', '=', 'sql')], 'invisible': [('exchange_type', '!=', 'sql')]}"/>
+                        <field name="file_backend_id" attrs="{'required': [('exchange_type', '=', 'file')], 'invisible': [('exchange_type', '!=', 'file')]}"/>
                     </group>
                     <notebook>
                         <page string="Message Headers" name="message">

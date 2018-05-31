@@ -8,12 +8,12 @@ class InforBackend(models.Model):
     _inherit = 'infor.backend'
 
     infor_journal_ids = fields.One2many(
-        comodel_name='infor.backend.journal',
-        inverse_name='infor_backend_id',
+        comodel_name='infor.account.journal',
+        inverse_name='backend_id',
         string='Journals'
     )
     infor_journal_custom_field_ids = fields.One2many(
-        comodel_name='infor.backend.journal.custom.field',
-        inverse_name='infor_backend_id',
+        comodel_name='infor.account.journal.custom.field',
+        inverse_name='backend_id',
         string='Custom Field'
     )

@@ -4,13 +4,17 @@
 from odoo import fields, models
 
 
-class BackendInforJournal(models.Model):
-    _name = 'infor.backend.journal'
+class InforJournal(models.Model):
+    _name = 'infor.account.journal'
+    _inherit = 'infor.binding'
+    _inherits = {'account.journal': 'odoo_id'}
     _description = 'Infor Backend Journal'
 
-    journal_id = fields.Many2one(
+    odoo_id = fields.Many2one(
         comodel_name='account.journal',
         string='Journal',
+        required=True,
+        ondelete='cascade',
     )
     frequency = fields.Selection(
         [('manual', 'Manual'), ('realtime', 'Real-time'),
@@ -22,7 +26,11 @@ class BackendInforJournal(models.Model):
     use_summarize_entry = fields.Boolean(
         string='Summarize entries?'
     )
-    infor_backend_id = fields.Many2one(
-        comodel_name='infor.backend',
-        string='Infor Backend',
-    )
+
+    _sql_constraints = [
+        ('infor_uniq', 'unique(backend_id, odoo_id)',
+         'This journal is already configured for this backend.'),
+    ]
+
+    def is_realtime(self):
+        return self.frequency == 'realtime'

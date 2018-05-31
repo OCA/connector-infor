@@ -1,7 +1,8 @@
 # Copyright (C) 2018 - TODAY, Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields, models
+from odoo import api, fields, models
+from odoo.addons.queue_job.job import job
 
 
 class InforBinding(models.Model):
@@ -16,10 +17,20 @@ class InforBinding(models.Model):
         required=True,
         ondelete='restrict',
     )
-    # fields.Char because 0 is a valid Infor ID
-    infor_id = fields.Char(string='ID on Infor')
+    external_id = fields.Char(string='ID on Infor')
 
     _sql_constraints = [
         ('infor_uniq', 'unique(backend_id, external_id)',
          'A binding already exists with the same Infor ID.'),
     ]
+
+    @api.multi
+    @job(default_channel='root.infor')
+    def generate_message(self):
+        bindings = self.exists()
+        if not bindings:
+            return
+        self.ensure_one()
+        with self.backend_id.work_on(self._name) as work:
+            messager = work.component('messager')
+            return messager.run(bindings)

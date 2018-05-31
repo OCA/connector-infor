@@ -21,7 +21,7 @@ class InforBackend(models.Model):
     component_id = fields.Char(string='Component ID')
     confirmation_code = fields.Char(string='Confirmation Code')
     accounting_entity_id = fields.Char(string='Accounting Entity ID')
-    type = fields.Selection(
+    exchange_type = fields.Selection(
         [('sql', 'SQL'), ('file', 'File')],
         string='Type',
         default='sql',
@@ -45,7 +45,7 @@ class InforBackend(models.Model):
     @api.multi
     def test_infor_connnection(self):
         self.ensure_one()
-        if self.type == 'sql':
+        if self.exchange_type == 'sql':
             self.dbsource_id.connection_test()
         else:
             self.file_backend_id.sftp_connnection_test()
@@ -67,6 +67,7 @@ class InforBackend(models.Model):
             self.cr.rollback()
             _logger.info("Exception details\n\n%s", err)
         finally:
+            # TODO rollback on dbsource?
             connection.close()
         return True
 

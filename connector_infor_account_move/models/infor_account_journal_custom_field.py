@@ -5,7 +5,7 @@ from odoo import fields, models
 
 
 class InforBackendJournalCustomField(models.Model):
-    _name = 'infor.backend.journal.custom.field'
+    _name = 'infor.account.journal.custom.field'
     _description = 'Infor Backend Journal Custom Field'
 
     name = fields.Char(string='Name')
@@ -20,7 +20,7 @@ class InforBackendJournalCustomField(models.Model):
     field_value = fields.Char(string='Value')
     field = fields.Char(string='Field')
     field_default_value = fields.Char(string='Default Value')
-    infor_backend_id = fields.Many2one(
+    backend_id = fields.Many2one(
         comodel_name='infor.backend',
         string='Infor Backend',
     )
