@@ -1,12 +1,12 @@
 # Copyright (C) 2018 - TODAY, Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class InforJournal(models.Model):
     _name = 'infor.account.journal'
-    _inherit = 'infor.binding'
+    _inherit = ['infor.binding', 'infor.frequency.mixin']
     _inherits = {'account.journal': 'odoo_id'}
     _description = 'Infor Backend Journal'
 
@@ -15,13 +15,6 @@ class InforJournal(models.Model):
         string='Journal',
         required=True,
         ondelete='cascade',
-    )
-    frequency = fields.Selection(
-        [('manual', 'Manual'), ('realtime', 'Real-time'),
-         ('hourly', 'Hourly'), ('daily', 'Daily'),
-         ('weekly', 'Weekly'), ('monthly', 'Monthly')],
-        string='Frequency',
-        default='manual',
     )
     use_summarize_entry = fields.Boolean(
         string='Summarize entries?'
@@ -32,5 +25,20 @@ class InforJournal(models.Model):
          'This journal is already configured for this backend.'),
     ]
 
-    def is_realtime(self):
-        return self.frequency == 'realtime'
+    @api.model
+    def run_cron(self, binding_id):
+        binding = self.browse(binding_id)
+        binding.generate_all_messages()
+
+    @api.multi
+    def generate_all_messages(self):
+        infor_journal_ids = self.ids
+        # search moves for which we don't have a domain yet
+        domain = [
+            ('infor_journal_id', 'in', infor_journal_ids),
+            ('infor_message_id', '=', False),
+            ('external_id', '=', False),
+        ]
+        move_bindings = self.env['infor.account.move'].search(domain)
+        for binding in move_bindings:
+            binding.with_delay().generate_message()

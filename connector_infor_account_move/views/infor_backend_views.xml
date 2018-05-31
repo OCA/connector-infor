@@ -14,8 +14,11 @@
                         <tree string="Journals" editable="bottom">
                             <field name="odoo_id"/>
                             <field name="frequency"/>
+                            <field name="is_cron" invisible="1"/>
                             <field name="use_summarize_entry"/>
                             <field name="external_id"/>
+                            <button name="generate_all_messages" type="object"
+                                    string="Post to Infor"/>
                         </tree>
                     </field>
                 </page>

@@ -59,11 +59,13 @@ class InforAccountMove(models.Model):
         comodel_name='infor.message',
         string='Infor Message',
         ondelete='set null',
+        index=True,
     )
     infor_journal_id = fields.Many2one(
         comodel_name='infor.account.journal',
         compute='_compute_infor_journal_id',
         store=True,
+        index=True,
     )
 
     @api.depends('backend_id', 'odoo_id.journal_id')
@@ -78,7 +80,7 @@ class InforAccountMove(models.Model):
             )
 
     def is_realtime(self):
-        return self.infor_journal_id.is_realtime()
+        return self.infor_journal_id.is_realtime
 
 
 class InforMoveListener(Component):

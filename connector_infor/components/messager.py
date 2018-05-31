@@ -47,7 +47,8 @@ class InforMessager(Component):
         self._lock()
 
         content = self._produce_message()
-        self._create_message(content)
+        message = self._create_message(content)
+        self._update_record(message)
 
         return _('Message created')
 
@@ -56,12 +57,13 @@ class InforMessager(Component):
         return producer.produce(self.record)
 
     def _create_message(self, content):
-        self.env['infor.message'].sudo().create({
+        return self.env['infor.message'].sudo().create({
             'backend_id': self.backend_record.id,
-            # TODO
-            'message_ident': 1,
             'content': content,
         })
+
+    def _update_record(self, message):
+        self.record.sudo().infor_message_id = message.id
 
     def _lock(self):
         """Lock the record.
@@ -88,4 +90,4 @@ class InforMessager(Component):
 
     def _has_to_skip(self):
         """Return True if the creation of the message can be skipped"""
-        return False
+        return self.record.infor_message_id or self.record.external_id
