@@ -4,9 +4,9 @@
 from odoo import fields, models
 
 
-class BackendInforJournalCustomField(models.Model):
-    _name = 'backend.infor.journal.custom.field'
-    _description = 'Backend Infor Journal Custom Field'
+class InforBackendJournalCustomField(models.Model):
+    _name = 'infor.backend.journal.custom.field'
+    _description = 'Infor Backend Journal Custom Field'
 
     name = fields.Char(string='Name')
     field_type = fields.Selection(

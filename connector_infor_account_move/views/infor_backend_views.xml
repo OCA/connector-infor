@@ -3,14 +3,14 @@
 <!-- Copyright 2018 Open Source Integrators
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 
-    <record id="view_infor_backend_journal_line_form" model="ir.ui.view">
-        <field name="name">infor.backend.journal.line.form</field>
+    <record id="view_infor_backend_journal_form" model="ir.ui.view">
+        <field name="name">infor.backend.journal.form</field>
         <field name="model">infor.backend</field>
         <field name="inherit_id" ref="connector_infor.view_infor_backend_form"/>
         <field name="arch" type="xml">
             <page position="after">
                 <page string="Journals" name="account_journals">
-                    <field name="backend_infor_journal_line">
+                    <field name="infor_journal_ids">
                         <tree string="Journals" editable="bottom">
                             <field name="journal_id"/>
                             <field name="frequency"/>
@@ -19,7 +19,7 @@
                     </field>
                 </page>
                 <page string="Custom Fields" name="custom_fields">
-                    <field name="backend_infor_journal_custom_field">
+                    <field name="infor_journal_custom_field_ids">
                         <form string="Custom Field">
                             <group>
                                 <group>

@@ -4,9 +4,9 @@
 from odoo import fields, models
 
 
-class BackendInforJournalLine(models.Model):
-    _name = 'backend.infor.journal.line'
-    _description = 'Backend Infor Journal Line'
+class BackendInforJournal(models.Model):
+    _name = 'infor.backend.journal'
+    _description = 'Infor Backend Journal'
 
     journal_id = fields.Many2one(
         comodel_name='account.journal',
