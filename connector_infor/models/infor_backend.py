@@ -16,7 +16,7 @@ class InforBackend(models.Model):
     _description = 'Infor Backend'
 
     name = fields.Char(string='Name', required=True)
-    tenant_id = fields.Char(string='Tenant ID')
+    tenant_id = fields.Char(string='Tenant ID', default='Infor')
     logical_id = fields.Char(string='Logical ID')
     component_id = fields.Char(string='Component ID')
     confirmation_code = fields.Char(string='Confirmation Code')
