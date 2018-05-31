@@ -15,6 +15,16 @@ class InforBackend(models.Model):
     _inherit = ['mail.thread', 'connector.backend']
     _description = 'Infor Backend'
 
+    # the verb is the kind of synchronization used with infor
+    # 'process' is when using a database, we receive a return from infor, it
+    # allows to handle failures and get back IDs.
+    # 'sync' is used with the files exchanges, we put the file somewhere and
+    # don't have any error handling or return from infor
+    _verbs = {
+        'sql': 'Process',
+        'file': 'Sync'
+    }
+
     name = fields.Char(string='Name', required=True)
     tenant_id = fields.Char(string='Tenant ID', default='Infor')
     logical_id = fields.Char(string='Logical ID')
@@ -41,6 +51,13 @@ class InforBackend(models.Model):
         string='Messages',
         readonly=True,
     )
+    verb = fields.Char(
+        compute='_compute_verb'
+    )
+
+    def _compute_verb(self):
+        for backend in self:
+            backend.verb = self._verbs[backend.exchange_type]
 
     @api.multi
     def test_infor_connnection(self):

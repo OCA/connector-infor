@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?> <ProcessSourceSystemJournalEntry xsi:schemaLocation="http://schema.infor.com/InforOAGIS/2 http://schema.infor.com/2.9.0/InforOAGIS/BODs/Developer/ProcessSourceSystemJournalEntry.xsd" releaseID="9.2" versionID="2.9.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.infor.com/InforOAGIS/2">
+<?xml version="1.0" encoding="utf-8"?> <{{VERB}}SourceSystemJournalEntry xsi:schemaLocation="http://schema.infor.com/InforOAGIS/2 http://schema.infor.com/2.9.0/InforOAGIS/BODs/Developer/{{VERB}}SourceSystemJournalEntry.xsd" releaseID="9.2" versionID="2.9.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.infor.com/InforOAGIS/2">
   <ApplicationArea>
     <Sender>
       <LogicalID schemeVersionID="6.02.01.0188">lid://infor.sunsystems.1</LogicalID>
@@ -7,16 +7,16 @@
       <AuthorizationID />
     </Sender>
     <CreationDateTime>{{CREATE_DATE}}</CreationDateTime>
-    <BODID>Infor-nid:Infor:${BUSINESS_UNIT}::{{INVOICE_ID}}:0?SourceSystemJournalEntry&amp;verb=Process</BODID>
+    <BODID>Infor-nid:Infor:${BUSINESS_UNIT}::{{INVOICE_ID}}:0?SourceSystemJournalEntry&amp;verb={{VERB}}</BODID>
   </ApplicationArea>
   <DataArea>
-    <Process>
+    <{{VERB}}>
       <TenantID>{{TENANT_ID}}</TenantID>
       <AccountingEntityID>{{ACCOUNTING_ENTITY_ID}}</AccountingEntityID>
       <ActionCriteria>
         <ActionExpression actionCode="Add" />
       </ActionCriteria>
-    </Process>
+    </{{VERB}}>
     <SourceSystemJournalEntry>
       <JournalEntryHeader>
         <JournalID accountingEntity="${BUSINESS_UNIT}" variationID="">{{INVOICE_ID}}</JournalID>
@@ -77,4 +77,4 @@
       </JournalEntryLine>
     </SourceSystemJournalEntry>
   </DataArea>
-</ProcessSourceSystemJournalEntry>
+</{{VERB}}SourceSystemJournalEntry>

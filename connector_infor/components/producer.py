@@ -41,6 +41,7 @@ class InforJinjaProducer(AbstractComponent):
         """
         backend = self.backend_record
         return {
+            'VERB': backend.verb,
             'TENANT_ID': backend.tenant_id,
         }
 
