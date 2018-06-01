@@ -123,6 +123,7 @@ class InforMoveProducer(Component):
         # invoice jinja template, loop on them
         # TODO in the template, use a filter to show False as ''
         context.update({
+            # TODO check date format
             'CREATE_DATE': today,
             # TODO check the fields...
             'INVOICE_ID': invoice.id,

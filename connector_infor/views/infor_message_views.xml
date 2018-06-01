@@ -14,6 +14,7 @@
                         <field name="backend_id"/>
                         <field name="message_ident"/>
                         <field name="create_date"/>
+                        <field name="verb"/>
                     </group>
                     <group>
                         <field name="content"/>
@@ -29,6 +30,7 @@
         <field name="arch" type="xml">
             <tree delete="false" create="false">
                 <field name="backend_id"/>
+                <field name="verb"/>
                 <field name="message_ident"/>
                 <field name="create_date"/>
                 <field name="state"/>
@@ -41,6 +43,7 @@
         <field name="model">infor.message</field>
         <field name="arch" type="xml">
             <search>
+                <field name="verb"/>
                 <field name="backend_id"/>
                 <field name="message_ident"/>
                 <field name="state"/>

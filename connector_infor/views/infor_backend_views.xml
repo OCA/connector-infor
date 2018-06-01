@@ -26,7 +26,7 @@
                         <field name="name"/>
                         <field name="exchange_type"/>
                         <field name="dbsource_id" attrs="{'required': [('exchange_type', '=', 'sql')], 'invisible': [('exchange_type', '!=', 'sql')]}"/>
-                        <field name="file_backend_id" attrs="{'required': [('exchange_type', '=', 'file')], 'invisible': [('exchange_type', '!=', 'file')]}"/>
+                        <field name="storage_backend_id" attrs="{'required': [('exchange_type', '=', 'file')], 'invisible': [('exchange_type', '!=', 'file')]}"/>
                     </group>
                     <notebook>
                         <page string="Message Headers" name="message">

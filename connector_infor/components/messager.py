@@ -23,7 +23,7 @@ class InforMessager(Component):
     _usage = 'messager'
 
     def __init__(self, working_context):
-        super(InforMessager, self).__init__(working_context)
+        super().__init__(working_context)
         self.record = None
 
     def run(self, records, *args, **kwargs):
@@ -51,9 +51,9 @@ class InforMessager(Component):
             return
 
         assert self.records
-        # prevent other jobs to create a message for the same record will be
+        # prevent other jobs to create a message for the same records, will be
         # released on commit (or rollback)
-        self._lock()
+        self.component('record.locker').lock(self.records)
 
         content = self._produce_message()
         message = self._create_message(content)
@@ -68,6 +68,7 @@ class InforMessager(Component):
     def _create_message(self, content):
         return self.env['infor.message'].sudo().create({
             'backend_id': self.backend_record.id,
+            'verb': self.backend_record.verb,
             'content': content,
         })
 
@@ -75,30 +76,6 @@ class InforMessager(Component):
         self.records.sudo().write({
             'infor_message_id': message.id,
         })
-
-    def _lock(self):
-        """Lock the records.
-
-        Lock the record so we are sure that only one job is running for this
-        record if concurrent jobs have to create a message for the same record.
-        When concurrent jobs try to work on the same record, the first one will
-        lock and proceed, the others will fail to lock and will be retried
-        later.
-        """
-        sql = ("SELECT id FROM %s WHERE ID IN %%s FOR UPDATE NOWAIT" %
-               self.model._table)
-        try:
-            self.env.cr.execute(sql, (tuple(self.records.ids), ),
-                                log_exceptions=False)
-        except psycopg2.OperationalError:
-            _logger.info('A concurrent job is already working on the same '
-                         'record (%s with one id in %s). Job delayed later.',
-                         self.model._name, tuple(self.records.ids))
-            raise RetryableJobError(
-                'A concurrent job is already working on the same record '
-                '(%s with one id in %s). The job will be retried later.' %
-                (self.model._name,  tuple(self.records.ids))
-            )
 
     def _has_to_skip(self):
         """Return True if the creation of the message can be skipped"""

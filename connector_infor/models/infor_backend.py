@@ -41,8 +41,8 @@ class InforBackend(models.Model):
         comodel_name='base.external.dbsource',
         string='DB Source',
     )
-    file_backend_id = fields.Many2one(
-        comodel_name='file.backend',
+    storage_backend_id = fields.Many2one(
+        comodel_name='storage.backend',
         string='File Backend',
     )
     infor_message_ids = fields.One2many(
@@ -65,7 +65,8 @@ class InforBackend(models.Model):
         if self.exchange_type == 'sql':
             self.dbsource_id.connection_test()
         else:
-            self.file_backend_id.sftp_connnection_test()
+            # TODO implement `test_connection` in StorageBackend model
+            self.storage_backend_id.connnection_test()
         return True
 
     @api.multi

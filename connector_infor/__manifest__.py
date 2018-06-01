@@ -12,7 +12,7 @@
     "depends": [
         "connector",
         "base_external_dbsource_mysql",
-        "connector_file",
+        "storage_backend_sftp",
     ],
     "data": [
         "security/connector_security.xml",
