@@ -34,7 +34,7 @@ class InforJinjaProducer(AbstractComponent):
         assert self._template_path
         return file_open(self._template_path, 'r').read()
 
-    def _render_context(self, record):
+    def _render_context(self, records):
         """Return the context for jinja2 rendering
 
         Can be overridden to add values to render in the template.
@@ -45,7 +45,7 @@ class InforJinjaProducer(AbstractComponent):
             'TENANT_ID': backend.tenant_id,
         }
 
-    def produce(self, record):
+    def produce(self, records):
         """Produce the content of a message
 
         This component uses Jinja2 from a template file to produce
@@ -53,4 +53,4 @@ class InforJinjaProducer(AbstractComponent):
         to return the values to fill in the template.
         """
         template = Template(self._template)
-        return template.render(**self._render_context(record))
+        return template.render(**self._render_context(records))

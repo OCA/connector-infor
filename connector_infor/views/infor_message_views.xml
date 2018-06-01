@@ -13,6 +13,7 @@
                     <group>
                         <field name="backend_id"/>
                         <field name="message_ident"/>
+                        <field name="create_date"/>
                     </group>
                     <group>
                         <field name="content"/>
@@ -29,6 +30,7 @@
             <tree delete="false" create="false">
                 <field name="backend_id"/>
                 <field name="message_ident"/>
+                <field name="create_date"/>
                 <field name="state"/>
             </tree>
         </field>

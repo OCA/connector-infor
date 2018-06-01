@@ -26,35 +26,44 @@ class InforMessager(Component):
         super(InforMessager, self).__init__(working_context)
         self.record = None
 
-    def run(self, record, *args, **kwargs):
-        """Create a message for ``record`` to be sent to Infor
+    def run(self, records, *args, **kwargs):
+        """Create a message for ``records`` to be sent to Infor
 
         :param record: record to push as message
         """
-        self.record = record
+        self.records = self._filter_records(records)
         result = self._run()
         return result
 
+    def _filter_records(self, records):
+        """Filter records to include in the Infor message
+
+        By default, any record already in a message or having an infor id
+        is removed.
+        """
+        return records.filtered(
+            lambda rec: not (rec.infor_message_id or rec.external_id)
+        )
+
     def _run(self):
         """Flow of the messager"""
-        assert self.record
-
         if self._has_to_skip():
             return
 
+        assert self.records
         # prevent other jobs to create a message for the same record will be
         # released on commit (or rollback)
         self._lock()
 
         content = self._produce_message()
         message = self._create_message(content)
-        self._update_record(message)
+        self._update_records(message)
 
         return _('Message created')
 
     def _produce_message(self):
         producer = self.work.component(usage='message.producer')
-        return producer.produce(self.record)
+        return producer.produce(self.records)
 
     def _create_message(self, content):
         return self.env['infor.message'].sudo().create({
@@ -62,11 +71,13 @@ class InforMessager(Component):
             'content': content,
         })
 
-    def _update_record(self, message):
-        self.record.sudo().infor_message_id = message.id
+    def _update_records(self, message):
+        self.records.sudo().write({
+            'infor_message_id': message.id,
+        })
 
     def _lock(self):
-        """Lock the record.
+        """Lock the records.
 
         Lock the record so we are sure that only one job is running for this
         record if concurrent jobs have to create a message for the same record.
@@ -74,20 +85,22 @@ class InforMessager(Component):
         lock and proceed, the others will fail to lock and will be retried
         later.
         """
-        sql = ("SELECT id FROM %s WHERE ID = %%s FOR UPDATE NOWAIT" %
+        sql = ("SELECT id FROM %s WHERE ID IN %%s FOR UPDATE NOWAIT" %
                self.model._table)
         try:
-            self.env.cr.execute(sql, (self.record.id, ),
+            self.env.cr.execute(sql, (tuple(self.records.ids), ),
                                 log_exceptions=False)
         except psycopg2.OperationalError:
             _logger.info('A concurrent job is already working on the same '
-                         'record (%s with id %s). Job delayed later.',
-                         self.model._name, self.record.id)
+                         'record (%s with one id in %s). Job delayed later.',
+                         self.model._name, tuple(self.records.ids))
             raise RetryableJobError(
                 'A concurrent job is already working on the same record '
-                '(%s with id %s). The job will be retried later.' %
-                (self.model._name, self.record.id))
+                '(%s with one id in %s). The job will be retried later.' %
+                (self.model._name,  tuple(self.records.ids))
+            )
 
     def _has_to_skip(self):
         """Return True if the creation of the message can be skipped"""
-        return self.record.infor_message_id or self.record.external_id
+        # if all the records have been filtered, we have nothing to do
+        return not self.records

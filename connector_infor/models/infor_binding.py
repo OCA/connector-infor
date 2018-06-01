@@ -30,7 +30,8 @@ class InforBinding(models.Model):
         bindings = self.exists()
         if not bindings:
             return
-        self.ensure_one()
-        with self.backend_id.work_on(self._name) as work:
+        backend = self.mapped('backend_id')
+        backend.ensure_one()
+        with backend.work_on(self._name) as work:
             messager = work.component('messager')
             return messager.run(bindings)

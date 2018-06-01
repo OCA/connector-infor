@@ -32,13 +32,16 @@ class InforJournal(models.Model):
 
     @api.multi
     def generate_all_messages(self):
-        infor_journal_ids = self.ids
-        # search moves for which we don't have a domain yet
-        domain = [
-            ('infor_journal_id', 'in', infor_journal_ids),
-            ('infor_message_id', '=', False),
-            ('external_id', '=', False),
-        ]
-        move_bindings = self.env['infor.account.move'].search(domain)
-        for binding in move_bindings:
-            binding.with_delay().generate_message()
+        for infor_journal in self:
+            # search moves for which we don't have a domain yet
+            domain = [
+                ('infor_journal_id', '=', infor_journal.id),
+                ('infor_message_id', '=', False),
+                ('external_id', '=', False),
+            ]
+            move_bindings = self.env['infor.account.move'].search(domain)
+            if infor_journal.use_summarize_entry:
+                move_bindings.with_delay().generate_message()
+            else:
+                for binding in move_bindings:
+                    binding.with_delay().generate_message()

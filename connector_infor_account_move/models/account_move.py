@@ -101,14 +101,8 @@ class InforMoveProducer(Component):
 
     _template_path = 'connector_infor_account_move/messages/move.xml'
 
-    def _render_context(self, record):
-        """Return the context for jinja2 rendering
-
-        Must be overridden to return a dict of values.
-        """
+    def _render_context_unique(self, context, move):
         today = fields.Datetime.now()
-        move = record
-
         move_lines = move.line_ids.filtered(
             lambda line: line.credit or line.debit
         )
@@ -127,7 +121,6 @@ class InforMoveProducer(Component):
         # and generate 2 lists of (key, value), one for
         # dimensioncode and one for property, in the
         # invoice jinja template, loop on them
-        context = super()._render_context(record)
         # TODO in the template, use a filter to show False as ''
         context.update({
             'CREATE_DATE': today,
@@ -140,4 +133,26 @@ class InforMoveProducer(Component):
             'COMPANY_CURRENCY': move.company_id.currency_id.name,
             'JOURNAL_LINES': move_lines,
         })
+        return context
+
+    def _render_context_summarized(self, context, moves):
+        # TODO implement summarized context
+        # the fields which can be different (description, ...) are
+        # left empty. The amounts are summed.
+        return context
+
+    def _render_context(self, records):
+        """Return the context for jinja2 rendering
+
+        Must be overridden to return a dict of values.
+        """
+        context = super()._render_context(records)
+        if len(records) == 1:
+            context.update(
+                **self._render_context_unique(context, records)
+            )
+        else:
+            context.update(
+                **self._render_context_summarized(context, records)
+            )
         return context
