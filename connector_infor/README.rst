@@ -15,8 +15,7 @@ your version of Infor ION. The module was implemented and tested with MySQL
 and MSSQL.
 
 The structure of the database is the one suggested by Infor with inbox and
-outbox tables. You can find the script to create the structure here:
-`IOBOX script create.zip <https://github.com/OCA/connector-infor/files/1866491/IOBOX.script.create.zip>`_
+outbox tables.
 
 Installation
 ============

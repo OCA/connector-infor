@@ -5,7 +5,7 @@ from odoo import api, fields, models
 from odoo.addons.queue_job.job import job
 
 
-class InforBinding(models.Model):
+class InforBinding(models.AbstractModel):
     _name = 'infor.binding'
     _inherit = 'external.binding'
     _description = 'Infor Binding (abstract)'

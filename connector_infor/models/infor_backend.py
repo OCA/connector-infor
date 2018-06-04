@@ -55,6 +55,7 @@ class InforBackend(models.Model):
         compute='_compute_verb'
     )
 
+    @api.depends('exchange_type')
     def _compute_verb(self):
         for backend in self:
             backend.verb = self._verbs[backend.exchange_type]
