@@ -7,4 +7,5 @@ from odoo import fields, models
 class AccountJournal(models.Model):
     _inherit = 'account.journal'
 
+    # TODO replace by a binding model
     infor_journal = fields.Char(string='Infor Journal ID')

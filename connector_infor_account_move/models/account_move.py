@@ -95,7 +95,7 @@ class InforMoveListener(Component):
 
 
 class InforMoveProducer(Component):
-    _name = 'infor.invoice.producer'
+    _name = 'infor.account.move.producer'
     _inherit = 'infor.jinja.producer'
     _apply_on = ['infor.account.move']
 
