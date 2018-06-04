@@ -13,10 +13,6 @@
                     type="object"
                     class="oe_highlight"
                     string="Test Connection"/>
-                <button name="test_insert_record"
-                    type="object"
-                    class="oe_highlight"
-                    string="Insert record"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

@@ -70,26 +70,6 @@ class InforBackend(models.Model):
         return True
 
     @api.multi
-    def test_insert_record(self):
-        self.ensure_one()
-        sql = "INSERT INTO cor_property (C_PROPERTY_NAME,C_PROPERTY_VALUE) " \
-              "VALUES (%(property_name)s, %(property_value)s)"
-        execute_params = {
-            'property_name': 'new_odoo_record',
-            'property_value': '3.0.0',
-        }
-        try:
-            connection = self.dbsource_id.connection_open_mysql()
-            self.dbsource_id.execute(sql, execute_params, False)
-        except Exception as err:
-            self.cr.rollback()
-            _logger.info("Exception details\n\n%s", err)
-        finally:
-            # TODO rollback on dbsource?
-            connection.close()
-        return True
-
-    @api.multi
     def action_view_infor_messages(self):
         self.ensure_one()
         action = self.env.ref('connector_infor.action_infor_message').read()[0]
