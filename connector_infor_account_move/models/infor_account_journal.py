@@ -33,7 +33,7 @@ class InforJournal(models.Model):
     @api.multi
     def generate_all_messages(self):
         for infor_journal in self:
-            # search moves for which we don't have a domain yet
+            # search moves for which we don't have a message yet
             domain = [
                 ('infor_journal_id', '=', infor_journal.id),
                 ('infor_message_id', '=', False),
