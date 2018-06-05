@@ -8,17 +8,16 @@ class InforBackendJournalCustomField(models.Model):
     _name = 'infor.account.journal.custom.field'
     _description = 'Infor Backend Journal Custom Field'
 
-    name = fields.Char(string='Name')
+    name = fields.Char()
     field_type = fields.Selection(
         [('dimensioncode', 'DimensionCode'), ('property', 'Property')],
         string='Type',
     )
     data_type = fields.Selection(
         [('static', 'Static'), ('dynamic', 'Dynamic')],
-        string='Data Type',
     )
     field_value = fields.Char(string='Value')
-    field = fields.Char(string='Field')
+    field = fields.Char()
     field_default_value = fields.Char(string='Default Value')
     backend_id = fields.Many2one(
         comodel_name='infor.backend',

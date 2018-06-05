@@ -7,7 +7,6 @@ from odoo.modules.registry import Registry
 
 from odoo.addons.queue_job.exception import RetryableJobError
 from odoo.addons.component.core import WorkContext
-from odoo.addons.component.core import Component
 
 from .common import InforTestCase
 

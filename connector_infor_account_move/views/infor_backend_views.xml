@@ -11,7 +11,7 @@
             <page position="after">
                 <page string="Journals" name="account_journals">
                     <field name="infor_journal_ids">
-                        <tree string="Journals" editable="bottom">
+                        <tree editable="bottom">
                             <field name="odoo_id"/>
                             <field name="frequency"/>
                             <field name="is_cron" invisible="1"/>
@@ -38,7 +38,7 @@
                                 </group>
                             </group>
                         </form>
-                        <tree string="Custom Field">
+                        <tree>
                             <field name="name"/>
                             <field name="field_type"/>
                             <field name="data_type"/>

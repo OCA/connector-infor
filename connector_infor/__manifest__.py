@@ -14,6 +14,11 @@
         "base_external_dbsource_mysql",
         "storage_backend_sftp",
     ],
+    "external_dependencies": {
+        "python": [
+            "xmlunittest",
+        ],
+    },
     "data": [
         "security/connector_security.xml",
         "security/ir.model.access.csv",

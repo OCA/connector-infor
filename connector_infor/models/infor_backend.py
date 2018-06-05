@@ -25,11 +25,11 @@ class InforBackend(models.Model):
         'file': 'Sync'
     }
 
-    name = fields.Char(string='Name', required=True)
+    name = fields.Char(required=True)
     tenant_id = fields.Char(string='Tenant ID', default='Infor')
     logical_id = fields.Char(string='Logical ID')
     component_id = fields.Char(string='Component ID')
-    confirmation_code = fields.Char(string='Confirmation Code')
+    confirmation_code = fields.Char()
     accounting_entity_id = fields.Char(string='Accounting Entity ID')
     exchange_type = fields.Selection(
         [('sql', 'SQL'), ('file', 'File')],

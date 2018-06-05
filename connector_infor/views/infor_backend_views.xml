@@ -48,7 +48,7 @@
         <field name="name">infor.backend.tree</field>
         <field name="model">infor.backend</field>
         <field name="arch" type="xml">
-            <tree string="Infor Backend">
+            <tree>
                 <field name="name"/>
             </tree>
         </field>
