@@ -16,4 +16,3 @@
 connector https://github.com/OCA/connector 11.0
 base_external_dbsource_mysql https://github.com/maxodoo/oca-server-tools-addons.git mig-external-dbsource
 queue
-connector_infor https://github.com/ursais/connector-infor bodedra_connector_infor
