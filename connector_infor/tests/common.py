@@ -1,6 +1,10 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from contextlib import contextmanager
+
+import mock
+
 from xmlunittest import XmlTestMixin
 
 from odoo.tools import file_open
@@ -34,6 +38,16 @@ class InforTestMixin(object):
 
     def read_test_file(self, path):
         return file_open(path).read()
+
+    @contextmanager
+    def mock_with_delay(self):
+        with mock.patch('odoo.addons.queue_job.models.base.DelayableRecordset',
+                        name='DelayableRecordset', spec=True
+                        ) as delayable_cls:
+            # prepare the mocks
+            delayable = mock.MagicMock(name='DelayableBinding')
+            delayable_cls.return_value = delayable
+            yield delayable_cls, delayable
 
 
 class InforTestCase(SavepointComponentCase, InforTestMixin, XmlTestMixin):

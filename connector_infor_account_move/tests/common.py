@@ -15,9 +15,17 @@ class AccountMoveMixin(object):
         })
 
     @classmethod
-    def create_move(cls, journal):
+    def create_move_binding(cls, journal):
         return cls.env['infor.account.move'].create({
             'backend_id': cls.backend.id,
+            'name': 'test',
+            'date': fields.Date.today(),
+            'journal_id': journal.id,
+        })
+
+    @classmethod
+    def create_move(cls, journal):
+        return cls.env['account.move'].create({
             'name': 'test',
             'date': fields.Date.today(),
             'journal_id': journal.id,

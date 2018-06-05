@@ -14,11 +14,11 @@ class TestMoveMessager(InforComponentRegistryCase, AccountMoveMixin):
     def setUpClass(cls):
         super().setUpClass()
         cls.journal = cls.create_journal()
+        cls.move = cls.create_move_binding(cls.journal)
 
     def setUp(self):
         super().setUp()
         self.comp_registry.load_components('connector_infor_account_move')
-        self.move = self.create_move(self.journal)
 
     def test_messager(self):
         """"Generate a message record"""

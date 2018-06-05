@@ -15,8 +15,8 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
         super().setUpClass()
         cls.journal = cls.create_journal()
         # TODO more elaborate move, add lines so we have totals
-        cls.move1 = cls.create_move(cls.journal)
-        cls.move2 = cls.create_move(cls.journal)
+        cls.move1 = cls.create_move_binding(cls.journal)
+        cls.move2 = cls.create_move_binding(cls.journal)
 
     # TODO remove decorator once fixed
     @unittest.expectedFailure
@@ -55,3 +55,5 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 'examples/move_summarized.xml'
             ).encode('utf8')
             self.assertXmlEquivalentOutputs(content, expected)
+
+    # TODO add test for custom fields
