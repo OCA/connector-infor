@@ -27,6 +27,7 @@ class InforBinding(models.AbstractModel):
     @api.multi
     @job(default_channel='root.infor')
     def generate_message(self):
+        """Generate Infor message"""
         bindings = self.exists()
         if not bindings:
             return

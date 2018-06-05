@@ -46,6 +46,7 @@ class InforMessage(models.Model):
 
     @job(default_channel='root.infor')
     def post(self):
+        """Post Infor message"""
         message = self.exists()
         if not message:
             return
