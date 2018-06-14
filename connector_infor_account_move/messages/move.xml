@@ -50,7 +50,9 @@
           </AccountingChartReference>
         </GLAccount>
         <DimensionCodes>
-          <DimensionCode sequence="1" listID="${CUSTOM_ATTRIBUTE}">${CUSTOM_VALUE}</DimensionCode>
+          {% for code in DIMENSION_CODES %}
+            <DimensionCode sequence="{{ loop.index }}" listID="{{ code[0] }}">{{ code[1] }}</DimensionCode>
+          {% endfor %}
         </DimensionCodes>
         {%- if line.credit > 0 -%}
             <DebitCreditFlag>C</DebitCreditFlag>
@@ -69,9 +71,11 @@
         </MemoAmount>
         <ExchangeRateDateTime>{{TRANSACTION_DATE}}</ExchangeRateDateTime>
         <UserArea>
-          <Property sequence="1">
-            <NameValue name="${CUSTOM_ATTRIBUTE}" type="String" unitCode="EA">${CUSTOM_VALUE}</NameValue>
-          </Property>
+          {% for prop in PROPERTIES %}
+            <Property sequence="{{ loop.indey }}">
+              <NameValue name="{{ prop[0] }}" type="String" unitCode="EA">{{ prop[1] }}</NameValue>
+            </Property>
+          {% endfor %}
         </UserArea>
       {% endfor %}
       </JournalEntryLine>

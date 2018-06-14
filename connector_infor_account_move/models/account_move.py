@@ -102,14 +102,14 @@ class InforMoveProducer(Component):
 
     _template_path = 'connector_infor_account_move/messages/move.xml'
 
-    @property
-    def _format_datetime(self, d):
+    @staticmethod
+    def _format_datetime(d):
         if isinstance(d, str):
             d = fields.Datetime.from_string(d)
         return d.isoformat() + 'Z'
 
-    @property
-    def _default_text(self, move):
+    @staticmethod
+    def _default_text(move):
         return 'STOCK-{}'.format(''.join(move.date.split('-'))),
 
     def _render_context_unique(self, context, move):
@@ -132,12 +132,32 @@ class InforMoveProducer(Component):
             fiscalyear_end = fiscalyear_end.replace(year=fiscalyear_end.year + 1)
         # Fiscal period is the number of month from the end of the fiscal year
         fiscal_period = (12 - fiscalyear_end.month + int(move.date[5:7]))
-
         # TODO add custom fields
         # loop on backend.infor_journal_custom_field_ids
         # and generate 2 lists of (key, value), one for
         # dimensioncode and one for property, in the
         # invoice jinja template, loop on them
+        dimension_codes = []
+        properties = []
+        for r in self.backend_record.infor_journal_custom_field_ids:
+            if r.data_type == 'static':
+                value = r.field_value
+            else:
+                base_object, field_chain = r.field.split('.', 1)
+                try:
+                    if base_object == 'object':
+                        value = move.mapped(field_chain)[0]
+                    elif base_object == 'backend':
+                        value = self.backend_record.mapped(field_chain)[0]
+                except:
+                    value = r.field_default_value
+
+            custom_field = (r.name, value)
+            if r.field_type == 'dimensioncode':
+                dimension_codes.append(custom_field)
+            else:
+                properties.append(custom_field)
+
         # TODO in the template, use a filter to show False as ''
         context.update({
             'CREATE_DATE': self._format_datetime(today),
@@ -153,10 +173,12 @@ class InforMoveProducer(Component):
             'FISCAL_PERIOD': fiscal_period,
             'FISCAL_YEAR': fiscalyear_end.year,
             # TODO Need clarification...
-            'DESCRIPTION': invoice.reference or self._default_text(),
+            'DESCRIPTION': invoice.reference or self._default_text(move),
             # TODO Get default language of Odoo ?
             'LANGUAGE': 'en-GB',
             'TRANSACTION_DATE': self._format_datetime(move.date),
+            'DIMENSION_CODES': dimension_codes,
+            'PROPERTIES': properties,
         })
         return context
 
