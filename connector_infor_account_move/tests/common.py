@@ -19,7 +19,7 @@ class AccountMoveMixin(object):
         return cls.env['infor.account.move'].create({
             'backend_id': cls.backend.id,
             'name': 'test',
-            'date': fields.Date.today(),
+            'date': '2018-06-13 14:16:18',
             'journal_id': journal.id,
         })
 

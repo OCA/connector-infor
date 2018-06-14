@@ -19,7 +19,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
         cls.move2 = cls.create_move_binding(cls.journal)
 
     # TODO remove decorator once fixed
-    @unittest.expectedFailure
+    # @unittest.expectedFailure
     def test_move_not_summarized(self):
         with self.backend.work_on('infor.account.move') as work:
             component = work.component(usage='message.producer')
@@ -57,3 +57,11 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             self.assertXmlEquivalentOutputs(content, expected)
 
     # TODO add test for custom fields
+
+    def test_mapping_directly(self):
+        with self.backend.work_on('infor.account.move') as work:
+            component = work.component(usage='message.producer')
+            content = component._render_context(self.move1)
+        # Checking the formating of datetime
+        self.assertEqual(content.get('TRANSACTION_DATE'),
+                         '2018-06-13T00:00:00Z')

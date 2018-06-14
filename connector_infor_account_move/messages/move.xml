@@ -58,16 +58,16 @@
             <DebitCreditFlag>D</DebitCreditFlag>
         {%- endif %}
         <SourceAccountingDate>
-          <PeriodID>${FISCAL_PERIOD}</PeriodID>
-          <Year>${FISCAL_YEAR}</Year>
+          <PeriodID>{{FISCAL_PERIOD}}</PeriodID>
+          <Year>{{FISCAL_YEAR}}</Year>
           <PostDateTime>{{ line.create_date }}</PostDateTime>
         </SourceAccountingDate>
         <TransactionReferenceText>{{INVOICE_NUMBER}}</TransactionReferenceText>
-        <Description languageID="${LANGUAGE}">${DESCRIPTION}</Description>
+        <Description languageID="${LANGUAGE}">{{DESCRIPTION}}</Description>
         <MemoAmount>
           <AmountNumeric />
         </MemoAmount>
-        <ExchangeRateDateTime>${TRANSACTION_DATE}</ExchangeRateDateTime>
+        <ExchangeRateDateTime>{{TRANSACTION_DATE}}</ExchangeRateDateTime>
         <UserArea>
           <Property sequence="1">
             <NameValue name="${CUSTOM_ATTRIBUTE}" type="String" unitCode="EA">${CUSTOM_VALUE}</NameValue>

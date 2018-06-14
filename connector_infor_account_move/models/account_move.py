@@ -1,6 +1,7 @@
 # Copyright (C) 2018 - TODAY, Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from datetime import datetime
 from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
@@ -101,6 +102,16 @@ class InforMoveProducer(Component):
 
     _template_path = 'connector_infor_account_move/messages/move.xml'
 
+    @property
+    def _format_datetime(self, d):
+        if isinstance(d, str):
+            d = fields.Datetime.from_string(d)
+        return d.isoformat() + 'Z'
+
+    @property
+    def _default_text(self, move):
+        return 'STOCK-{}'.format(''.join(move.date.split('-'))),
+
     def _render_context_unique(self, context, move):
         today = fields.Datetime.now()
         move_lines = move.line_ids.filtered(
@@ -110,11 +121,17 @@ class InforMoveProducer(Component):
             [('move_id', '=', move.id)],
             limit=1,
         )
-        # TODO: it's not complete, add:
         # BUSINESS_UNIT
-        # FISCAL_PERIOD, FISCAL_YEAR
-        # DESCRIPTION, TRANSACTION_DATE
-        # LANGUAGE
+        # TODO What is it, need check on BODID TAG ?
+        fiscalyear_end = datetime(
+            datetime.now().year,
+            int(move.company_id.fiscalyear_last_month),
+            int(move.company_id.fiscalyear_last_day)
+        )
+        if fiscalyear_end < datetime.now():
+            fiscalyear_end = fiscalyear_end.replace(year=fiscalyear_end.year + 1)
+        # Fiscal period is the number of month from the end of the fiscal year
+        fiscal_period = (12 - fiscalyear_end.month + int(move.date[5:7]))
 
         # TODO add custom fields
         # loop on backend.infor_journal_custom_field_ids
@@ -123,16 +140,23 @@ class InforMoveProducer(Component):
         # invoice jinja template, loop on them
         # TODO in the template, use a filter to show False as ''
         context.update({
-            # TODO check date format
-            'CREATE_DATE': today,
-            # TODO check the fields...
+            'CREATE_DATE': self._format_datetime(today),
+            'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
             'INVOICE_ID': invoice.id,
-            'INVOICE_NUMBER': invoice.number,
+            'INVOICE_NUMBER': invoice.number or self._default_text(move),
             'ACCOUNTING_ENTITY_ID': move.id,
             'JOURNAL_CODE': move.journal_id.code,
+            # TODO Could not find this one in the xml file !?
             'SEC_CURRENCY': move.currency_id.name,
             'COMPANY_CURRENCY': move.company_id.currency_id.name,
             'JOURNAL_LINES': move_lines,
+            'FISCAL_PERIOD': fiscal_period,
+            'FISCAL_YEAR': fiscalyear_end.year,
+            # TODO Need clarification...
+            'DESCRIPTION': invoice.reference or self._default_text(),
+            # TODO Get default language of Odoo ?
+            'LANGUAGE': 'en-GB',
+            'TRANSACTION_DATE': self._format_datetime(move.date),
         })
         return context
 
