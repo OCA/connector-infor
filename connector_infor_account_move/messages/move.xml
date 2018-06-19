@@ -7,7 +7,7 @@
       <AuthorizationID />
     </Sender>
     <CreationDateTime>{{CREATE_DATE}}</CreationDateTime>
-    <BODID>Infor-nid:Infor:${BUSINESS_UNIT}::{{INVOICE_ID}}:0?SourceSystemJournalEntry&amp;verb={{VERB}}</BODID>
+    <BODID>Infor-nid:Infor:{{BUSINESS_UNIT}}::{{INVOICE_ID}}:0?SourceSystemJournalEntry&amp;verb={{VERB}}</BODID>
   </ApplicationArea>
   <DataArea>
     <{{VERB}}>
@@ -19,7 +19,7 @@
     </{{VERB}}>
     <SourceSystemJournalEntry>
       <JournalEntryHeader>
-        <JournalID accountingEntity="${BUSINESS_UNIT}" variationID="">{{INVOICE_ID}}</JournalID>
+        <JournalID accountingEntity="{{BUSINESS_UNIT}}" variationID="">{{INVOICE_ID}}</JournalID>
         <DisplayID>{{INVOICE_ID}}</DisplayID>
         <BaseJournalEntryHeader>
           <LedgerID>A</LedgerID>
@@ -38,15 +38,15 @@
           </JournalStatus>
         </BaseJournalEntryHeader>
       </JournalEntryHeader>
-      <JournalEntryLine sequence="${JOURNAL_ENTRY_SEQUENCE}">
       {% for line in JOURNAL_LINES %}
+      <JournalEntryLine sequence="{{ loop.index }}">
         <Amount currencyID="{{ line.company_id.currency_id.name }}">{{SEC_AMOUNT}}</Amount>
         <FunctionalAmount currencyID="{{COMPANY_CURRENCY}}">{{COMPANY_AMOUNT}}</FunctionalAmount>
         <ReportingCurrencyAmount currencyID="{{CURRENCY}}">0</ReportingCurrencyAmount>
         <GLAccount>
           <GLNominalAccount>{{ line.account_id.code }}</GLNominalAccount>
           <AccountingChartReference>
-            <ID>${BUSINESS_UNIT}</ID>
+            <ID>{{BUSINESS_UNIT}}</ID>
           </AccountingChartReference>
         </GLAccount>
         <DimensionCodes>
@@ -54,7 +54,7 @@
             <DimensionCode sequence="{{ loop.index }}" listID="{{ code[0] }}">{{ code[1] }}</DimensionCode>
           {% endfor %}
         </DimensionCodes>
-        {%- if line.credit > 0 -%}
+        {% if line.credit > 0 -%}
             <DebitCreditFlag>C</DebitCreditFlag>
         {% else %}
             <DebitCreditFlag>D</DebitCreditFlag>
@@ -65,20 +65,20 @@
           <PostDateTime>{{ line.create_date }}</PostDateTime>
         </SourceAccountingDate>
         <TransactionReferenceText>{{INVOICE_NUMBER}}</TransactionReferenceText>
-        <Description languageID="${LANGUAGE}">{{DESCRIPTION}}</Description>
+        <Description languageID="{{LANGUAGE}}">{{DESCRIPTION}}</Description>
         <MemoAmount>
           <AmountNumeric />
         </MemoAmount>
         <ExchangeRateDateTime>{{TRANSACTION_DATE}}</ExchangeRateDateTime>
         <UserArea>
           {% for prop in PROPERTIES %}
-            <Property sequence="{{ loop.indey }}">
+            <Property sequence="{{ loop.index }}">
               <NameValue name="{{ prop[0] }}" type="String" unitCode="EA">{{ prop[1] }}</NameValue>
             </Property>
           {% endfor %}
         </UserArea>
-      {% endfor %}
       </JournalEntryLine>
+      {% endfor %}
     </SourceSystemJournalEntry>
   </DataArea>
 </{{VERB}}SourceSystemJournalEntry>

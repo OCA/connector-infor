@@ -2,22 +2,37 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import unittest
+from string import Template
+from freezegun import freeze_time
 
 from odoo.addons.connector_infor.tests.common import InforTestCase
 
 from .common import AccountMoveMixin
 
 
+@freeze_time("2018-06-18 17:07:00")
 class TestMoveProducer(InforTestCase, AccountMoveMixin):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        cls.account = cls.env['account.account'].search([
+            ('internal_type', '=', 'receivable')])
+        cls.account.code = 'SPR'
+
         cls.journal = cls.create_journal()
-        # TODO more elaborate move, add lines so we have totals
         cls.move1 = cls.create_move_binding(cls.journal)
         cls.move2 = cls.create_move_binding(cls.journal)
-
+        cls.partner = cls.env['res.partner'].create({
+            'name': 'Test partner'
+            })
+        cls.invoice = cls.env['account.invoice'].create({
+            'journal_id': cls.journal.id,
+            'partner_id': cls.partner.id,
+            'move_id': cls.move1.odoo_id.id,
+            # number is related to move_id.name
+            })
         # Prepare custom fields
         cls.dimension_static = cls.env['infor.account.journal.custom.field'].create({
             'name': 'Shape_of_the_earth',
@@ -64,22 +79,34 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'backend_id': cls.backend.id,
             })
 
-    # TODO remove decorator once fixed
-    # @unittest.expectedFailure
     def test_move_not_summarized(self):
         with self.backend.work_on('infor.account.move') as work:
             component = work.component(usage='message.producer')
             # we need bytes to parse with lxml otherwise it gets confused
             # by the encoding header in the file
             content = component.produce(self.move1).encode('utf8')
-
             self.assertXmlDocument(content)
-
-            # TODO: complete the expected xml
-            expected = self.read_test_file(
+            # Load expected result from file setting some ids as they can
+            # not be predicted
+            test_file = Template(self.read_test_file(
                 'connector_infor_account_move/tests/'
-                'examples/move_not_summarized.xml'
+                'examples/move_not_summarized.xml')
+            )
+            expected = test_file.substitute(
+                INVOICE_ID=str(self.invoice.id),
+                MOVE_ID=str(self.move1.id),
+                TEST_DATE=self.move1.create_date,
             ).encode('utf8')
+            # This a quick way to check the diff line by line to ease debugging
+            # generated_line = [l.strip() for l in content.split(b'\n') if len(l.strip())]
+            # expected_line = [l.strip() for l in expected.split(b'\n') if len(l.strip())]
+            # l = len(expected_line)
+            # for i in range(l):
+            #     if generated_line[i].strip()!=expected_line[i].strip():
+            #         print ('Diff at {}/{}'.format(i, l))
+            #         print('Expected {}'.format(expected_line[i]))
+            #         print('Generated {}'.format(generated_line[i]))
+            #         break
             self.assertXmlEquivalentOutputs(content, expected)
 
     # TODO test summarized move

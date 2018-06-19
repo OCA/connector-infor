@@ -109,8 +109,12 @@ class InforMoveProducer(Component):
         return d.isoformat() + 'Z'
 
     @staticmethod
+    def _format_numeric(n):
+        return '{0:.5f}'.format(n)
+
+    @staticmethod
     def _default_text(move):
-        return 'STOCK-{}'.format(''.join(move.date.split('-'))),
+        return 'STOCK-{}'.format(''.join(move.date.split('-')))
 
     def _render_context_unique(self, context, move):
         today = fields.Datetime.now()
@@ -118,7 +122,7 @@ class InforMoveProducer(Component):
             lambda line: line.credit or line.debit
         )
         invoice = self.env['account.invoice'].search(
-            [('move_id', '=', move.id)],
+            [('move_id', '=', move.odoo_id.id)],
             limit=1,
         )
         # BUSINESS_UNIT
@@ -164,18 +168,22 @@ class InforMoveProducer(Component):
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
             'INVOICE_ID': invoice.id,
             'INVOICE_NUMBER': invoice.number or self._default_text(move),
+            # TODO Not in the xml template ?
             'ACCOUNTING_ENTITY_ID': move.id,
             'JOURNAL_CODE': move.journal_id.code,
             # TODO Could not find this one in the xml file !?
             'SEC_CURRENCY': move.currency_id.name,
+            'CURRENCY': move.currency_id.name,
+            'SEC_AMOUNT': self._format_numeric(move.amount),
             'COMPANY_CURRENCY': move.company_id.currency_id.name,
+            'COMPANY_AMOUNT': self._format_numeric(move.amount),
             'JOURNAL_LINES': move_lines,
             'FISCAL_PERIOD': fiscal_period,
             'FISCAL_YEAR': fiscalyear_end.year,
             # TODO Need clarification...
             'DESCRIPTION': invoice.reference or self._default_text(move),
             # TODO Get default language of Odoo ?
-            'LANGUAGE': 'en-GB',
+            'LANGUAGE': 'en_US',
             'TRANSACTION_DATE': self._format_datetime(move.date),
             'DIMENSION_CODES': dimension_codes,
             'PROPERTIES': properties,

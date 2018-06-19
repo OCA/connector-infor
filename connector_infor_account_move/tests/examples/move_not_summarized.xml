@@ -6,26 +6,26 @@
       <ConfirmationCode>Always</ConfirmationCode>
       <AuthorizationID />
     </Sender>
-    <CreationDateTime>{{CREATE_DATE}}</CreationDateTime>
-    <BODID>Infor-nid:Infor:${BUSINESS_UNIT}::{{INVOICE_ID}}:0?SourceSystemJournalEntry&amp;verb=Sync</BODID>
+    <CreationDateTime>2018-06-18T17:07:00Z</CreationDateTime>
+    <BODID>Infor-nid:Infor:Acc::$INVOICE_ID:0?SourceSystemJournalEntry&amp;verb=Sync</BODID>
   </ApplicationArea>
   <DataArea>
     <Sync>
       <TenantID>Infor</TenantID>
-      <AccountingEntityID>Acc</AccountingEntityID>
+      <AccountingEntityID>$MOVE_ID</AccountingEntityID>
       <ActionCriteria>
         <ActionExpression actionCode="Add" />
       </ActionCriteria>
     </Sync>
     <SourceSystemJournalEntry>
       <JournalEntryHeader>
-        <JournalID accountingEntity="${BUSINESS_UNIT}" variationID="">{{INVOICE_ID}}</JournalID>
-        <DisplayID>{{INVOICE_ID}}</DisplayID>
+        <JournalID accountingEntity="Acc" variationID="">$INVOICE_ID</JournalID>
+        <DisplayID>$INVOICE_ID</DisplayID>
         <BaseJournalEntryHeader>
           <LedgerID>A</LedgerID>
           <LedgerType>Actual</LedgerType>
           <AccountingJournalReference>
-            <ID>{{JOURNAL_CODE}}</ID>
+            <ID>TEST</ID>
           </AccountingJournalReference>
           <LedgerSetupReference>
             <DocumentID>
@@ -38,43 +38,78 @@
           </JournalStatus>
         </BaseJournalEntryHeader>
       </JournalEntryHeader>
-      <JournalEntryLine sequence="${JOURNAL_ENTRY_SEQUENCE}">
-      {% for line in JOURNAL_LINES %}
-        <Amount currencyID="EUR">{{SEC_AMOUNT}}</Amount>
-        <FunctionalAmount currencyID="{{COMPANY_CURRENCY}}">{{COMPANY_AMOUNT}}</FunctionalAmount>
-        <ReportingCurrencyAmount currencyID="{{CURRENCY}}">0</ReportingCurrencyAmount>
-        <GLAccount>
-          <GLNominalAccount>{{ line.account_id.code }}</GLNominalAccount>
-          <AccountingChartReference>
-            <ID>${BUSINESS_UNIT}</ID>
-          </AccountingChartReference>
-        </GLAccount>
-        <DimensionCodes>
-          <DimensionCode sequence="1" listID="${CUSTOM_ATTRIBUTE}">${CUSTOM_VALUE}</DimensionCode>
-        </DimensionCodes>
-        {%- if line.credit > 0 -%}
-            <DebitCreditFlag>C</DebitCreditFlag>
-        {% else %}
-            <DebitCreditFlag>D</DebitCreditFlag>
-        {%- endif %}
-        <SourceAccountingDate>
-          <PeriodID>{{FISCAL_PERIOD}}</PeriodID>
-          <Year>{{FISCAL_YEAR}}</Year>
-          <PostDateTime>{{ line.create_date }}</PostDateTime>
-        </SourceAccountingDate>
-        <TransactionReferenceText>{{INVOICE_NUMBER}}</TransactionReferenceText>
-        <Description languageID="${LANGUAGE}">{{DESCRIPTION}}</Description>
-        <MemoAmount>
-          <AmountNumeric />
-        </MemoAmount>
-        <ExchangeRateDateTime>${TRANSACTION_DATE}</ExchangeRateDateTime>
-        <UserArea>
-          <Property sequence="1">
-            <NameValue name="${CUSTOM_ATTRIBUTE}" type="String" unitCode="EA">${CUSTOM_VALUE}</NameValue>
-          </Property>
-        </UserArea>
-      {% endfor %}
-      </JournalEntryLine>
+        <JournalEntryLine sequence="1">
+          <Amount currencyID="USD">150.00000</Amount>
+          <FunctionalAmount currencyID="USD">150.00000</FunctionalAmount>
+          <ReportingCurrencyAmount currencyID="USD">0</ReportingCurrencyAmount>
+          <GLAccount>
+            <GLNominalAccount>SPR</GLNominalAccount>
+            <AccountingChartReference>
+              <ID>Acc</ID>
+            </AccountingChartReference>
+          </GLAccount>
+          <DimensionCodes>
+            <DimensionCode sequence="1" listID="Shape_of_the_earth">eliptic</DimensionCode>
+            <DimensionCode sequence="2" listID="Move_Narration">little story</DimensionCode>
+            <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
+          </DimensionCodes>
+          <DebitCreditFlag>C</DebitCreditFlag>
+          <SourceAccountingDate>
+            <PeriodID>6</PeriodID>
+            <Year>2018</Year>
+            <PostDateTime>$TEST_DATE</PostDateTime>
+          </SourceAccountingDate>
+          <TransactionReferenceText>test</TransactionReferenceText>
+          <Description languageID="en_US">STOCK-20180613</Description>
+          <MemoAmount>
+            <AmountNumeric />
+          </MemoAmount>
+          <ExchangeRateDateTime>2018-06-13T00:00:00Z</ExchangeRateDateTime>
+          <UserArea>
+            <Property sequence="1">
+              <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>
+            </Property>
+            <Property sequence="2">
+              <NameValue name="Prop_deux" type="String" unitCode="EA">TEST</NameValue>
+            </Property>
+          </UserArea>
+        </JournalEntryLine>
+        <JournalEntryLine sequence="2">
+          <Amount currencyID="USD">150.00000</Amount>
+          <FunctionalAmount currencyID="USD">150.00000</FunctionalAmount>
+          <ReportingCurrencyAmount currencyID="USD">0</ReportingCurrencyAmount>
+          <GLAccount>
+            <GLNominalAccount>SPR</GLNominalAccount>
+            <AccountingChartReference>
+              <ID>Acc</ID>
+            </AccountingChartReference>
+          </GLAccount>
+          <DimensionCodes>
+            <DimensionCode sequence="1" listID="Shape_of_the_earth">eliptic</DimensionCode>
+            <DimensionCode sequence="2" listID="Move_Narration">little story</DimensionCode>
+            <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
+          </DimensionCodes>
+          <DebitCreditFlag>D</DebitCreditFlag>
+          <SourceAccountingDate>
+            <PeriodID>6</PeriodID>
+            <Year>2018</Year>
+            <PostDateTime>$TEST_DATE</PostDateTime>
+          </SourceAccountingDate>
+          <TransactionReferenceText>test</TransactionReferenceText>
+          <Description languageID="en_US">STOCK-20180613</Description>
+          <MemoAmount>
+            <AmountNumeric />
+          </MemoAmount>
+          <ExchangeRateDateTime>2018-06-13T00:00:00Z</ExchangeRateDateTime>
+          <UserArea>
+            <Property sequence="1">
+              <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>
+            </Property>
+            <Property sequence="2">
+              <NameValue name="Prop_deux" type="String" unitCode="EA">TEST</NameValue>
+            </Property>
+          </UserArea>
+        </JournalEntryLine>
     </SourceSystemJournalEntry>
   </DataArea>
 </SyncSourceSystemJournalEntry>
