@@ -29,11 +29,13 @@ class AccountMoveMixin(object):
                     'name': 'ying',
                     'debit': 150,
                     'account_id': account.id,
+                    'ref': 'debit_line',
                     }),
                 (0, 0, {
                     'name': 'yang',
                     'credit': 150,
                     'account_id': account.id,
+                    'ref': 'credit_line',
                     })
             ],
         })

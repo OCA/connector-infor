@@ -51,7 +51,16 @@
         </GLAccount>
         <DimensionCodes>
           {% for code in DIMENSION_CODES %}
-            <DimensionCode sequence="{{ loop.index }}" listID="{{ code[0]|default('', true) }}">{{ code[1]|default('',  true) }}</DimensionCode>
+            {% if code.type == 'static' %}
+              <DimensionCode sequence="{{ loop.index }}" listID="{{ code.name|default('', true) }}">{{ code.value|default('',  true) }}</DimensionCode>
+            {% else %}
+              {% if code.object == 'backend' %}
+                {% set object = backend %}
+              {% else %}
+                {% set object = line %}
+              {% endif %}
+              <DimensionCode sequence="{{ loop.index }}" listID="{{ code.name|default('', true) }}">{{ object[code.value]|default(code.default,  true)|default('', true) }}</DimensionCode>
+            {% endif %}
           {% endfor %}
         </DimensionCodes>
         {% if line.credit > 0 -%}
@@ -73,7 +82,16 @@
         <UserArea>
           {% for prop in PROPERTIES %}
             <Property sequence="{{ loop.index }}">
-              <NameValue name="{{ prop[0]|default('', true) }}" type="String" unitCode="EA">{{ prop[1]|default('', true) }}</NameValue>
+            {% if prop.type == 'static' %}
+              <NameValue name="{{ prop.name|default('', true) }}" type="String" unitCode="EA">{{ prop.value|default('', true) }}</NameValue>
+            {% else %}
+              {% if prop.object == 'backend' %}
+                {% set object = backend %}
+              {% else %}
+                {% set object = line %}
+              {% endif %}
+              <NameValue name="{{ prop.name|default('', true) }}" type="String" unitCode="EA">{{ object.mapped(prop.value)[0]|default(prop.default, true)|default('', true) }}</NameValue>
+            {% endif %}
             </Property>
           {% endfor %}
         </UserArea>

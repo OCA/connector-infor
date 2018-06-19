@@ -125,8 +125,6 @@ class InforMoveProducer(Component):
             [('move_id', '=', move.odoo_id.id)],
             limit=1,
         )
-        # BUSINESS_UNIT
-        # TODO What is it, need check on BODID TAG ?
         fiscalyear_end = datetime(
             datetime.now().year,
             int(move.company_id.fiscalyear_last_month),
@@ -146,6 +144,7 @@ class InforMoveProducer(Component):
         for r in self.backend_record.infor_journal_custom_field_ids:
             if r.data_type == 'static':
                 value = r.field_value
+                base_object = ''
             else:
                 base_object, field_chain = r.field.split('.', 1)
                 try:
@@ -156,7 +155,14 @@ class InforMoveProducer(Component):
                 except:
                     value = r.field_default_value
 
-            custom_field = (r.name, value)
+            # custom_field = (r.name, value)
+            custom_field = {
+                'type': r.data_type,
+                'value': r.field_value if r.data_type == 'static' else field_chain,
+                'name': r.name,
+                'object': base_object or '',
+                'default': r.field_default_value,
+            }
             if r.field_type == 'dimensioncode':
                 dimension_codes.append(custom_field)
             else:
@@ -186,6 +192,7 @@ class InforMoveProducer(Component):
             'TRANSACTION_DATE': self._format_datetime(move.date),
             'DIMENSION_CODES': dimension_codes,
             'PROPERTIES': properties,
+            'backend': self.backend_record,
         })
         return context
 

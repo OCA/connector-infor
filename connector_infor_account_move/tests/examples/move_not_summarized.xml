@@ -50,7 +50,7 @@
           </GLAccount>
           <DimensionCodes>
             <DimensionCode sequence="1" listID="Shape_of_the_earth">eliptic</DimensionCode>
-            <DimensionCode sequence="2" listID="Move_Narration">little story</DimensionCode>
+            <DimensionCode sequence="2" listID="Move_Line_Ref">credit_line</DimensionCode>
             <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
           </DimensionCodes>
           <DebitCreditFlag>C</DebitCreditFlag>
@@ -86,7 +86,7 @@
           </GLAccount>
           <DimensionCodes>
             <DimensionCode sequence="1" listID="Shape_of_the_earth">eliptic</DimensionCode>
-            <DimensionCode sequence="2" listID="Move_Narration">little story</DimensionCode>
+            <DimensionCode sequence="2" listID="Move_Line_Ref">credit_line</DimensionCode>
             <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
           </DimensionCodes>
           <DebitCreditFlag>D</DebitCreditFlag>
