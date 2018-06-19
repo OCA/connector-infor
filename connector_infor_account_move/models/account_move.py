@@ -162,7 +162,6 @@ class InforMoveProducer(Component):
             else:
                 properties.append(custom_field)
 
-        # TODO in the template, use a filter to show False as ''
         context.update({
             'CREATE_DATE': self._format_datetime(today),
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
