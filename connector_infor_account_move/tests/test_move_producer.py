@@ -20,10 +20,9 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
         cls.account = cls.env['account.account'].search([
             ('internal_type', '=', 'receivable')])
         cls.account.code = 'SPR'
-
         cls.journal = cls.create_journal()
-        cls.move1 = cls.create_move_binding(cls.journal)
-        cls.move2 = cls.create_move_binding(cls.journal)
+        cls.move1 = cls.create_move_binding_1(cls.journal)
+        cls.move2 = cls.create_move_binding_2(cls.journal)
         cls.partner = cls.env['res.partner'].create({
             'name': 'Test partner'
             })
@@ -34,14 +33,15 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             # number is related to move_id.name
             })
         # Prepare custom fields
-        cls.dimension_static = cls.env['infor.account.journal.custom.field'].create({
+        cls.custom_field = cls.env['infor.account.journal.custom.field']
+        cls.dimension_static = cls.custom_field.create({
             'name': 'Shape_of_the_earth',
             'field_type': 'dimensioncode',
             'data_type': 'static',
             'field_value': 'eliptic',
             'backend_id': cls.backend.id,
             })
-        cls.dimension_dynamic = cls.env['infor.account.journal.custom.field'].create({
+        cls.dimension_dynamic = cls.custom_field.create({
             'name': 'Move_Line_Ref',
             'field_type': 'dimensioncode',
             'data_type': 'dynamic',
@@ -51,7 +51,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'backend_id': cls.backend.id,
             })
         # If dynamic field can not be resolved, default value should be used
-        cls.dimension_dynamic_bad_1 = cls.env['infor.account.journal.custom.field'].create({
+        cls.dimension_dynamic_bad_1 = cls.custom_field.create({
             'name': 'Get_default',
             'field_type': 'dimensioncode',
             'data_type': 'dynamic',
@@ -60,7 +60,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'field': 'object.move_id.narration.unknown_chain',
             'backend_id': cls.backend.id,
             })
-        cls.property_static = cls.env['infor.account.journal.custom.field'].create({
+        cls.property_static = cls.custom_field.create({
             'name': 'Prop_une',
             'field_type': 'property',
             'data_type': 'static',
@@ -69,7 +69,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'field': 'object.move_id.narration',
             'backend_id': cls.backend.id,
             })
-        cls.property_dynamic = cls.env['infor.account.journal.custom.field'].create({
+        cls.property_dynamic = cls.custom_field.create({
             'name': 'Prop_deux',
             'field_type': 'property',
             'data_type': 'dynamic',
@@ -78,6 +78,21 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'field': 'object.move_id.journal_id.code',
             'backend_id': cls.backend.id,
             })
+
+    @classmethod
+    def compare_xml_line_by_line(self, content, expected):
+        """This a quick way to check the diff line by line to ease debugging"""
+        generated_line = [l.strip() for l in content.split(b'\n')
+                          if len(l.strip())]
+        expected_line = [l.strip() for l in expected.split(b'\n')
+                         if len(l.strip())]
+        l = len(expected_line)
+        for i in range(l):
+            if generated_line[i].strip() != expected_line[i].strip():
+                print ('Diff at {}/{}'.format(i, l))
+                print('Expected {}'.format(expected_line[i]))
+                print('Generated {}'.format(generated_line[i]))
+                break
 
     def test_move_not_summarized(self):
         with self.backend.work_on('infor.account.move') as work:
@@ -97,19 +112,9 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 MOVE_ID=str(self.move1.id),
                 TEST_DATE=self.move1.create_date,
             ).encode('utf8')
-            # This a quick way to check the diff line by line to ease debugging
-            # generated_line = [l.strip() for l in content.split(b'\n') if len(l.strip())]
-            # expected_line = [l.strip() for l in expected.split(b'\n') if len(l.strip())]
-            # l = len(expected_line)
-            # for i in range(l):
-            #     if generated_line[i].strip()!=expected_line[i].strip():
-            #         print ('Diff at {}/{}'.format(i, l))
-            #         print('Expected {}'.format(expected_line[i]))
-            #         print('Generated {}'.format(generated_line[i]))
-            #         break
+            # self.compare_xml_line_by_line(content, expected)
             self.assertXmlEquivalentOutputs(content, expected)
 
-    # TODO test summarized move
     # TODO remove decorator once fixed
     @unittest.expectedFailure
     def test_move_summarized(self):
@@ -119,14 +124,19 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             # we need bytes to parse with lxml otherwise it gets confused
             # by the encoding header in the file
             content = component.produce(moves).encode('utf8')
-
             self.assertXmlDocument(content)
-
-            # TODO: complete the expected xml
-            expected = self.read_test_file(
+            # Load expected result from file setting some values as they can
+            # not be predicted
+            test_file = Template(self.read_test_file(
                 'connector_infor_account_move/tests/'
-                'examples/move_summarized.xml'
+                'examples/move_summarized.xml')
+            )
+            expected = test_file.substitute(
+                INVOICE_ID='',
+                MOVE_ID='',
+                TEST_DATE=self.move1.create_date,
             ).encode('utf8')
+            # self.compare_xml_line_by_line(content, expected)
             self.assertXmlEquivalentOutputs(content, expected)
 
     def test_custom_fields(self):
@@ -146,7 +156,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
              'name': 'Prop_deux',
              'value': 'move_id.journal_id.code'}
             ]
-        expected_dimension =[
+        expected_dimension = [
             {'base_object': '',
              'data_type': 'static',
              'default': False,

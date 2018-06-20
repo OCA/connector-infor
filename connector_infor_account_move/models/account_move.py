@@ -113,8 +113,12 @@ class InforMoveProducer(Component):
         return '{0:.5f}'.format(n)
 
     @staticmethod
-    def _default_text(move):
-        return 'STOCK-{}'.format(''.join(move.date.split('-')))
+    def _default_text(moves):
+        dates = moves.mapped('date')
+        if len(dates) == 1:
+            return 'STOCK-{}'.format(''.join(dates[0].split('-')))
+        else:
+            return ''
 
     def _render_context_unique(self, context, move):
         today = fields.Datetime.now()
@@ -131,7 +135,8 @@ class InforMoveProducer(Component):
             int(move.company_id.fiscalyear_last_day)
         )
         if fiscalyear_end < datetime.now():
-            fiscalyear_end = fiscalyear_end.replace(year=fiscalyear_end.year + 1)
+            fiscalyear_end = fiscalyear_end.replace(
+                    year=fiscalyear_end.year + 1)
         # Fiscal period is the number of month from the end of the fiscal year
         fiscal_period = (12 - fiscalyear_end.month + int(move.date[5:7]))
         # Prepare custom fields, for the dynamic ones test that they are
@@ -154,7 +159,8 @@ class InforMoveProducer(Component):
                 'field_type': r.field_type,
                 'data_type': r.data_type,
                 'name': r.name,
-                'value': r.field_value if r.data_type == 'static' else field_chain,
+                'value': (r.field_value if r.data_type == 'static'
+                          else field_chain),
                 'base_object': base_object or '',
                 'default': r.field_default_value,
             }
@@ -174,13 +180,15 @@ class InforMoveProducer(Component):
             # TODO Could not find this one in the xml file !?
             'SEC_CURRENCY': move.currency_id.name,
             'CURRENCY': move.currency_id.name,
+            # TODO Should not the amount be taken directely from the line
+            #      in the template ?
             'SEC_AMOUNT': self._format_numeric(move.amount),
             'COMPANY_CURRENCY': move.company_id.currency_id.name,
+            # TODO Convert
             'COMPANY_AMOUNT': self._format_numeric(move.amount),
             'JOURNAL_LINES': move_lines,
             'FISCAL_PERIOD': fiscal_period,
             'FISCAL_YEAR': fiscalyear_end.year,
-            # TODO Need clarification...
             'DESCRIPTION': invoice.reference or self._default_text(move),
             # TODO Get default language of Odoo ?
             'LANGUAGE': 'en_US',
@@ -195,6 +203,114 @@ class InforMoveProducer(Component):
         # TODO implement summarized context
         # the fields which can be different (description, ...) are
         # left empty. The amounts are summed.
+        today = fields.Datetime.now()
+        move_lines = moves.mapped('line_ids').filtered(
+            lambda line: line.credit or line.debit
+        )
+        invoices = self.env['account.invoice'].search(
+            [('move_id', 'in', moves.mapped('odoo_id').ids)],
+            limit=1,
+        )
+        invoice = None
+        if len(invoices) == 1:
+            invoice = invoices[0]
+        company = moves.mapped('company_id')
+        if len(company) > 1:
+            company = company[0]
+            # log warning multiple company moves ?!
+
+        fiscalyear_end = datetime(
+            datetime.now().year,
+            int(company.fiscalyear_last_month),
+            int(company.fiscalyear_last_day)
+        )
+        if fiscalyear_end < datetime.now():
+            fiscalyear_end = fiscalyear_end.replace(
+                    year=fiscalyear_end.year + 1)
+        move_months = list(set([d[5:7] for d in moves.mapped('date')]))
+        if len(move_months) == 1:
+            # Fiscal period is the number of month from the end of the
+            # fiscal year
+            fiscal_period = (12 - fiscalyear_end.month + int(move_months[0]))
+        else:
+            fiscal_period = ''
+            # log warning account_move on multiple fiscal period
+        # Prepare custom fields, for the dynamic ones test that they are
+        # accesible in the specified model
+        dimension_codes = []
+        properties = []
+        account_move_line = self.env['account.move.line']
+        for r in self.backend_record.infor_journal_custom_field_ids:
+            base_object = ''
+            if r.data_type == 'dynamic':
+                base_object, field_chain = r.field.split('.', 1)
+                try:
+                    if base_object == 'object':
+                        account_move_line.mapped(field_chain)
+                    elif base_object == 'backend':
+                        self.backend_record.mapped(field_chain)
+                except:
+                    field_chain = ''
+            custom_field = {
+                'field_type': r.field_type,
+                'data_type': r.data_type,
+                'name': r.name,
+                'value': (r.field_value if r.data_type == 'static'
+                          else field_chain),
+                'base_object': base_object or '',
+                'default': r.field_default_value,
+            }
+            if r.field_type == 'dimensioncode':
+                dimension_codes.append(custom_field)
+            else:
+                properties.append(custom_field)
+        # Only pass values that are the same for all account moves
+        journal_code = ''
+        journal_codes = moves.mapped('journal_id.code')
+        if len(journal_codes) == 1:
+            journal_code = journal_codes[0]
+        move_date = ''
+        move_dates = moves.mapped('date')
+        if len(move_dates) == 1:
+            move_date = move_dates[0]
+        currency = ''
+        currencies = moves.mapped('currency_id.name')
+        if len(currencies) == 1:
+            currency = currencies[0]
+        # Group lines by account number
+        accounts = {}
+        for line in move_lines:
+            if not line.account_id.id in accounts:
+                accounts[line.account_id.id] = line.credit
+            else:
+                accounts[line.account_id.id] += line.credit
+        context.update({
+            'CREATE_DATE': self._format_datetime(today),
+            'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
+            'INVOICE_ID': '',
+            'INVOICE_NUMBER': (invoice.number if invoice
+                               else self._default_text(moves)),
+            # TODO Not in the xml template ?
+            'ACCOUNTING_ENTITY_ID': '',
+            'JOURNAL_CODE': journal_code,
+            # TODO Could not find this one in the xml file !?
+            # 'SEC_CURRENCY': move.currency_id.name,
+            'CURRENCY': currency,
+            'SEC_AMOUNT': self._format_numeric(sum(moves.mapped('amount'))),
+            'COMPANY_CURRENCY': currency,
+            'COMPANY_AMOUNT': self._format_numeric(
+                sum(moves.mapped('amount'))),
+
+            'JOURNAL_LINES': move_lines,
+            'FISCAL_PERIOD': fiscal_period,
+            'FISCAL_YEAR': fiscalyear_end.year,
+            'DESCRIPTION': '',
+            'LANGUAGE': 'en_US',
+            'TRANSACTION_DATE': move_date,
+            'DIMENSION_CODES': dimension_codes,
+            'PROPERTIES': properties,
+            'backend': self.backend_record,
+        })
         return context
 
     def _render_context(self, records):
