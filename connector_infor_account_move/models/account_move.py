@@ -134,33 +134,28 @@ class InforMoveProducer(Component):
             fiscalyear_end = fiscalyear_end.replace(year=fiscalyear_end.year + 1)
         # Fiscal period is the number of month from the end of the fiscal year
         fiscal_period = (12 - fiscalyear_end.month + int(move.date[5:7]))
-        # TODO add custom fields
-        # loop on backend.infor_journal_custom_field_ids
-        # and generate 2 lists of (key, value), one for
-        # dimensioncode and one for property, in the
-        # invoice jinja template, loop on them
+        # Prepare custom fields, for the dynamic ones test that they are
+        # accesible in the specified model
         dimension_codes = []
         properties = []
+        account_move_line = self.env['account.move.line']
         for r in self.backend_record.infor_journal_custom_field_ids:
-            if r.data_type == 'static':
-                value = r.field_value
-                base_object = ''
-            else:
+            base_object = ''
+            if r.data_type == 'dynamic':
                 base_object, field_chain = r.field.split('.', 1)
                 try:
                     if base_object == 'object':
-                        value = move.mapped(field_chain)[0]
+                        account_move_line.mapped(field_chain)
                     elif base_object == 'backend':
-                        value = self.backend_record.mapped(field_chain)[0]
+                        self.backend_record.mapped(field_chain)
                 except:
-                    value = r.field_default_value
-
-            # custom_field = (r.name, value)
+                    field_chain = ''
             custom_field = {
-                'type': r.data_type,
-                'value': r.field_value if r.data_type == 'static' else field_chain,
+                'field_type': r.field_type,
+                'data_type': r.data_type,
                 'name': r.name,
-                'object': base_object or '',
+                'value': r.field_value if r.data_type == 'static' else field_chain,
+                'base_object': base_object or '',
                 'default': r.field_default_value,
             }
             if r.field_type == 'dimensioncode':

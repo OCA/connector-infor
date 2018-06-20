@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?> <{{VERB}}SourceSystemJournalEntry xsi:schemaLocation="http://schema.infor.com/InforOAGIS/2 http://schema.infor.com/2.9.0/InforOAGIS/BODs/Developer/{{VERB}}SourceSystemJournalEntry.xsd" releaseID="9.2" versionID="2.9.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.infor.com/InforOAGIS/2">
   <ApplicationArea>
+{% macro custom_field(index, custom_field, backend, moveline) -%}
+            {% if custom_field.data_type == 'static' %}
+              {% set field_value = custom_field.value %}
+            {% elif not custom_field.value %}
+              {# Dynamic custom field with bad field chain #}
+              {% set field_value = custom_field.default %}
+            {% else %}
+              {% if custom_field.base_object == 'backend' %}
+                {% set base_object = backend %}
+              {% else %}
+                {% set base_object = moveline %}
+              {% endif %}
+              {% set field_value = base_object.mapped(custom_field.value)[0] %}
+              {# TODO add custom_field.default if field_value is empty #}
+            {% endif %}
+            {% if custom_field.field_type == 'dimensioncode' %}
+              <DimensionCode sequence="{{ index }}" listID="{{ custom_field.name|default('', true) }}">{{ field_value|default('', true) }}</DimensionCode>
+            {% elif custom_field.field_type == 'property' %}
+            <Property sequence="{{ index }}">
+              <NameValue name="{{ custom_field.name|default('', true) }}" type="String" unitCode="EA">{{ field_value|default('', true) }}</NameValue>
+            </Property>
+            {% endif %}
+{%- endmacro %}
     <Sender>
       <LogicalID schemeVersionID="6.02.01.0188">lid://infor.sunsystems.1</LogicalID>
       <ComponentID>SunSystems 6</ComponentID>
@@ -51,16 +74,7 @@
         </GLAccount>
         <DimensionCodes>
           {% for code in DIMENSION_CODES %}
-            {% if code.type == 'static' %}
-              <DimensionCode sequence="{{ loop.index }}" listID="{{ code.name|default('', true) }}">{{ code.value|default('',  true) }}</DimensionCode>
-            {% else %}
-              {% if code.object == 'backend' %}
-                {% set object = backend %}
-              {% else %}
-                {% set object = line %}
-              {% endif %}
-              <DimensionCode sequence="{{ loop.index }}" listID="{{ code.name|default('', true) }}">{{ object[code.value]|default(code.default,  true)|default('', true) }}</DimensionCode>
-            {% endif %}
+            {{ custom_field(loop.index, code, backend, line) }}
           {% endfor %}
         </DimensionCodes>
         {% if line.credit > 0 -%}
@@ -81,18 +95,7 @@
         <ExchangeRateDateTime>{{ TRANSACTION_DATE|default('', true) }}</ExchangeRateDateTime>
         <UserArea>
           {% for prop in PROPERTIES %}
-            <Property sequence="{{ loop.index }}">
-            {% if prop.type == 'static' %}
-              <NameValue name="{{ prop.name|default('', true) }}" type="String" unitCode="EA">{{ prop.value|default('', true) }}</NameValue>
-            {% else %}
-              {% if prop.object == 'backend' %}
-                {% set object = backend %}
-              {% else %}
-                {% set object = line %}
-              {% endif %}
-              <NameValue name="{{ prop.name|default('', true) }}" type="String" unitCode="EA">{{ object.mapped(prop.value)[0]|default(prop.default, true)|default('', true) }}</NameValue>
-            {% endif %}
-            </Property>
+            {{ custom_field(loop.index, prop, backend, line) }}
           {% endfor %}
         </UserArea>
       </JournalEntryLine>
