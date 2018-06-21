@@ -66,7 +66,6 @@ class InforBackend(models.Model):
         if self.exchange_type == 'sql':
             self.dbsource_id.connection_test()
         else:
-            # TODO implement `test_connection` in StorageBackend model
             self.storage_backend_id.connnection_test()
         return True
 
@@ -79,3 +78,14 @@ class InforBackend(models.Model):
         action['domain'] = literal_eval(domain) if domain else []
         action['domain'].append(('backend_id', '=', self.id))
         return action
+
+    @api.onchange('exchange_type')
+    def validation_exchange_type(self):
+        """Disable the SQL exchange type selection"""
+        if self.exchange_type == 'sql':
+            self.exchange_type = ''
+            return {'warning': {'title': 'Not implemented',
+                                'message': 'The synchronization through a '
+                                           'database is not yet implemented.'}
+                    }
+        return {}
