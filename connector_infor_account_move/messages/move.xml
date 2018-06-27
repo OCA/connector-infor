@@ -3,7 +3,7 @@
 {% macro custom_field(index, custom_field, backend, moveline) -%}
             {% if custom_field.data_type == 'static' %}
               {% set field_value = custom_field.value %}
-            {% elif not custom_field.value %}
+            {% elif not custom_field.value or XML_VERSION=='summarized' %}
               {# Dynamic custom field with bad field chain #}
               {% set field_value = custom_field.default %}
             {% else %}
@@ -63,7 +63,7 @@
       </JournalEntryHeader>
       {% for line in JOURNAL_LINES %}
       <JournalEntryLine sequence="{{ loop.index }}">
-        <Amount currencyID="{{ line.company_id.currency_id.name|default('', true) }}">{{ SEC_AMOUNT|default('', true) }}</Amount>
+        <Amount currencyID="{{ line.account_id.company_id.currency_id.name|default('', true) }}">{{ SEC_AMOUNT|default('', true) }}</Amount>
         <FunctionalAmount currencyID="{{ COMPANY_CURRENCY|default('', true) }}">{{ COMPANY_AMOUNT|default('', true) }}</FunctionalAmount>
         <ReportingCurrencyAmount currencyID="{{ CURRENCY|default('', true) }}">0</ReportingCurrencyAmount>
         <GLAccount>
