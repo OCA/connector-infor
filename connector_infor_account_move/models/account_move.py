@@ -1,7 +1,7 @@
 # Copyright (C) 2018 - TODAY, Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from datetime import datetime
+from datetime import date, datetime
 from odoo import api, fields, models
 
 from odoo.addons.component.core import Component
@@ -116,7 +116,7 @@ class InforMoveProducer(Component):
 
     @staticmethod
     def _default_text(moves):
-        """ """
+        """Default description for some field."""
         dates = set(moves.mapped('date'))
         if len(dates) == 1:
             date = next(iter(dates))
@@ -127,7 +127,7 @@ class InforMoveProducer(Component):
     def _prepare_custom_fields(self):
         """Prepare custom fields to be consumed by template.
 
-        Prepare custom fields, for the dynamic ones test that they are
+        For the dynamic ones test that they are
         accesible in the specified model
         """
         dimension_codes = []
@@ -160,25 +160,25 @@ class InforMoveProducer(Component):
         return dimension_codes, properties
 
     @staticmethod
-    def _compute_fiscal_time(company, move_month):
-        """ """
-        fiscalyear_end = datetime(
-            datetime.now().year,
-            int(company.fiscalyear_last_month),
-            int(company.fiscalyear_last_day)
+    def _compute_fiscal_time(company, move_date_orm):
+        """Compute accounting period and year.
+
+        The period is the number of month to the next financial year end.
+        The year is the year of the next financial deadline.
+        """
+        move_date = fields.Date.from_string(move_date_orm)
+        fiscal_term = date(
+            move_date.year,
+            company.fiscalyear_last_month,
+            company.fiscalyear_last_day,
         )
-        if fiscalyear_end < datetime.now():
-            fiscalyear_end = fiscalyear_end.replace(
-                    year=fiscalyear_end.year + 1)
-        # Fiscal period is the number of month from the end of the fiscal year
-        if move_month:
-            fiscal_period = (12 - fiscalyear_end.month + move_month)
-        else:
-            fiscal_period = ''
-        return fiscalyear_end, fiscal_period
+        if fiscal_term < move_date:
+            fiscal_term = fiscal_term.replace(year=fiscal_term.year + 1)
+        fiscal_period = 12 - abs(move_date.month - fiscal_term.month)
+        return fiscal_term.year, fiscal_period
 
     def _render_context_unique(self, context, move):
-        today = fields.Datetime.now()
+        """Jinja context for a single account move."""
         move_lines = move.line_ids.filtered(
             lambda line: line.credit or line.debit
         )
@@ -186,11 +186,11 @@ class InforMoveProducer(Component):
             [('move_id', '=', move.odoo_id.id)],
             limit=1,
         )
-        fiscalyear_end, fiscal_period = self._compute_fiscal_time(
-                move.company_id, int(move.date[5:7]))
+        fiscalyear, fiscal_period = self._compute_fiscal_time(
+                move.company_id, move.date)
         dimension_codes, properties = self._prepare_custom_fields()
         context.update({
-            'CREATE_DATE': self._format_datetime(today),
+            'CREATE_DATE': self._format_datetime(datetime.now()),
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
             'INVOICE_ID': invoice.id,
             'INVOICE_NUMBER': invoice.number or self._default_text(move),
@@ -208,7 +208,7 @@ class InforMoveProducer(Component):
             'COMPANY_AMOUNT': self._format_numeric(move.amount),
             'JOURNAL_LINES': move_lines,
             'FISCAL_PERIOD': fiscal_period,
-            'FISCAL_YEAR': fiscalyear_end.year,
+            'FISCAL_YEAR': fiscalyear,
             'DESCRIPTION': invoice.reference or self._default_text(move),
             # TODO Get default language of Odoo ?
             'LANGUAGE': 'en_US',
@@ -221,8 +221,12 @@ class InforMoveProducer(Component):
         return context
 
     def _render_context_summarized(self, context, moves):
-        """ """
-        today = fields.Datetime.now()
+        """Jinja context for multiple account move.
+
+        Group the account move lines by account id  with amount sum.
+        For all dynamic custom fields the default value is used.
+        All value in the context that could be different are not set.
+        """
         move_lines = moves.mapped('line_ids').filtered(
             lambda line: line.credit or line.debit
         )
@@ -230,15 +234,13 @@ class InforMoveProducer(Component):
         if len(company) > 1:
             company = company[0]
             # log warning multiple company moves ?!
-
-        # Get the month of the move if it is the same for all moves
-        move_months = set([d[5:7] for d in moves.mapped('date')])
-        if len(move_months) == 1:
-            move_months = int(next(iter(move_months)))
+        # Compute the fiscal period if moves are in the same day
+        move_date = set(moves.mapped('date'))
+        if len(move_date) == 1:
+            fiscalyear, fiscal_period = self._compute_fiscal_time(
+                company, next(iter(move_date)))
         else:
-            move_months = None
-        fiscalyear_end, fiscal_period = self._compute_fiscal_time(
-                company, move_months)
+            fiscalyear = fiscal_period = ''
 
         dimension_codes, properties = self._prepare_custom_fields()
 
@@ -262,7 +264,7 @@ class InforMoveProducer(Component):
                  'debit': 0,
                  })
         context.update({
-            'CREATE_DATE': self._format_datetime(today),
+            'CREATE_DATE': self._format_datetime(datetime.now()),
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
             'INVOICE_ID': '',
             'INVOICE_NUMBER': '',
@@ -278,7 +280,7 @@ class InforMoveProducer(Component):
                 sum(moves.mapped('amount'))),
             'JOURNAL_LINES': summarized_lines,
             'FISCAL_PERIOD': fiscal_period,
-            'FISCAL_YEAR': fiscalyear_end.year,
+            'FISCAL_YEAR': fiscalyear,
             'DESCRIPTION': self._default_text(move_lines),
             'LANGUAGE': 'en_US',
             'TRANSACTION_DATE': '',

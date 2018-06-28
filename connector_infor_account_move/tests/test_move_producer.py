@@ -1,7 +1,6 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import unittest
 from string import Template
 from freezegun import freeze_time
 
@@ -78,6 +77,9 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'field': 'object.move_id.journal_id.code',
             'backend_id': cls.backend.id,
             })
+        cls.company = cls.env['res.company'].create({
+            'name': 'Test company',
+            })
 
     @classmethod
     def compare_xml_line_by_line(self, content, expected):
@@ -94,7 +96,24 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 print('Generated {}'.format(generated_line[i]))
                 break
 
+    def test_fiscal_time(self):
+        """Check the fiscal year and period computation."""
+        with self.backend.work_on('infor.account.move') as work:
+            component = work.component(usage='message.producer')
+            self.company.fiscalyear_last_month = 8
+            self.company.fiscalyear_last_day = 31
+            end, period = component._compute_fiscal_time(self.company,
+                                                         '2018-04-12')
+            self.assertEqual(end, 2018)
+            self.assertEqual(period, 8)
+            self.company.fiscalyear_last_month = 12
+            end, period = component._compute_fiscal_time(self.company,
+                                                         '2018-11-11')
+            self.assertEqual(end, 2018)
+            self.assertEqual(period, 11)
+
     def test_move_not_summarized(self):
+        """ """
         with self.backend.work_on('infor.account.move') as work:
             component = work.component(usage='message.producer')
             # we need bytes to parse with lxml otherwise it gets confused
