@@ -1,3 +1,6 @@
 # needed for running tests
 xmlunittest
 freezegun
+# For base_external_dbsource_sqlite
+sqlalchemy
+pymysql
