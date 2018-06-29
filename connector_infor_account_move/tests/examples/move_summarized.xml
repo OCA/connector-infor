@@ -64,7 +64,7 @@
           <MemoAmount>
             <AmountNumeric />
           </MemoAmount>
-          <ExchangeRateDateTime>2018-06-13T00:00:00Z</ExchangeRateDateTime>
+          <ExchangeRateDateTime></ExchangeRateDateTime>
           <UserArea>
             <Property sequence="1">
               <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>

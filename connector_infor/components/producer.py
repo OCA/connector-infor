@@ -3,9 +3,10 @@
 
 from jinja2 import Template
 
-from odoo.tools import file_open
+from odoo.tools import file_open, ustr
 from odoo.addons.component.core import AbstractComponent
 
+from odoo.addons.mail.models.mail_template import mako_template_env
 
 class InforBaseProducer(AbstractComponent):
     """Produce a message for the outbox (interface)"""
@@ -51,6 +52,14 @@ class InforJinjaProducer(AbstractComponent):
         This component uses Jinja2 from a template file to produce
         the message. The :meth:`render_context` method must be overridden
         to return the values to fill in the template.
+        For safetc the odoo sandboxed Jinja environment is used.
         """
-        template = Template(self._template)
+        template_txt = self._template
+        mako_template_env.variable_start_string = "{{"
+        mako_template_env.variable_end_string = "}}"
+        mako_template_env.block_start_string = "{%"
+        mako_template_env.block_end_string = "%}"
+        mako_template_env.comment_start_string = "{#"
+        mako_template_env.comment_end_string = "#}"
+        template = mako_template_env.from_string(ustr(template_txt))
         return template.render(**self._render_context(records))

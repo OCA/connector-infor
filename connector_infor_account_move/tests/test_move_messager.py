@@ -14,7 +14,7 @@ class TestMoveMessager(InforComponentRegistryCase, AccountMoveMixin):
     def setUpClass(cls):
         super().setUpClass()
         cls.journal = cls.create_journal()
-        cls.move = cls.create_move_binding(cls.journal)
+        cls.move = cls.create_move_binding_1(cls.journal)
 
     def setUp(self):
         super().setUp()

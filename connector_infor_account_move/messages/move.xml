@@ -81,7 +81,7 @@
             <DebitCreditFlag>C</DebitCreditFlag>
         {% else %}
             <DebitCreditFlag>D</DebitCreditFlag>
-        {%- endif %}
+        {% endif %}
         <SourceAccountingDate>
           <PeriodID>{{ FISCAL_PERIOD|default('',  true) }}</PeriodID>
           <Year>{{ FISCAL_YEAR|default('', true) }}</Year>

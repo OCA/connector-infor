@@ -131,11 +131,9 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 MOVE_ID=str(self.move1.id),
                 TEST_DATE=self.move1.create_date,
             ).encode('utf8')
-            # self.compare_xml_line_by_line(content, expected)
-            self.assertXmlEquivalentOutputs(content, expected)
+            self.compare_xml_line_by_line(content, expected)
+            # self.assertXmlEquivalentOutputs(content, expected)
 
-    # TODO remove decorator once fixed
-    # @unittest.expectedFailure
     def test_move_summarized(self):
         moves = self.move1 + self.move2
         with self.backend.work_on('infor.account.move') as work:
@@ -155,8 +153,8 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 MOVE_ID='',
                 TEST_DATE=self.move1.create_date,
             ).encode('utf8')
-            self.compare_xml_line_by_line(content, expected)
-            # self.assertXmlEquivalentOutputs(content, expected)
+            # self.compare_xml_line_by_line(content, expected)
+            self.assertXmlEquivalentOutputs(content, expected)
 
     def test_custom_fields(self):
         """Check that the custom fields are properly generated."""
