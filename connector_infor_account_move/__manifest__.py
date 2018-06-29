@@ -18,6 +18,7 @@
         "security/ir.model.access.csv",
         "views/infor_backend_views.xml",
         "views/account_views.xml",
+        "views/infor_account_move_views.xml",
     ],
     "installable": True,
 }
