@@ -91,7 +91,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
         l = len(expected_line)
         for i in range(l):
             if generated_line[i].strip() != expected_line[i].strip():
-                print ('Diff at {}/{}'.format(i, l))
+                print('Diff at {}/{}'.format(i, l))
                 print('Expected {}'.format(expected_line[i]))
                 print('Generated {}'.format(generated_line[i]))
                 break

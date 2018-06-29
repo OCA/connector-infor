@@ -135,7 +135,8 @@ class InforMoveProducer(Component):
         account_move_line = self.env['account.move.line']
         for r in self.backend_record.infor_journal_custom_field_ids:
             base_object = ''
-            if r.data_type == 'dynamic':
+            field_chain = ''
+            if r.data_type == 'dynamic' and r.field:
                 base_object, field_chain = r.field.split('.', 1)
                 try:
                     if base_object == 'object':
@@ -143,7 +144,7 @@ class InforMoveProducer(Component):
                     elif base_object == 'backend':
                         self.backend_record.mapped(field_chain)
                 except:
-                    field_chain = ''
+                    pass
             custom_field = {
                 'field_type': r.field_type,
                 'data_type': r.data_type,
@@ -187,7 +188,7 @@ class InforMoveProducer(Component):
             limit=1,
         )
         fiscalyear, fiscal_period = self._compute_fiscal_time(
-                move.company_id, move.date)
+            move.company_id, move.date)
         dimension_codes, properties = self._prepare_custom_fields()
         context.update({
             'CREATE_DATE': self._format_datetime(datetime.now()),

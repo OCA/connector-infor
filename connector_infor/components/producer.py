@@ -1,12 +1,11 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from jinja2 import Template
-
 from odoo.tools import file_open, ustr
 from odoo.addons.component.core import AbstractComponent
 
 from odoo.addons.mail.models.mail_template import mako_template_env
+
 
 class InforBaseProducer(AbstractComponent):
     """Produce a message for the outbox (interface)"""
