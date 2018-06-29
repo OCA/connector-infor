@@ -13,7 +13,6 @@
         "account",
         "connector_infor",
         "queue_job",
-        "component",
     ],
     "data": [
         "security/ir.model.access.csv",
