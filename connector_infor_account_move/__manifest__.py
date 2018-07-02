@@ -14,6 +14,9 @@
         "connector_infor",
         "queue_job",
     ],
+    "external_dependencies": {
+        "python": ['freezegun', 'xmlunittest'],
+    },
     "data": [
         "security/ir.model.access.csv",
         "views/infor_backend_views.xml",
