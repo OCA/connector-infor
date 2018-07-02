@@ -100,7 +100,7 @@ class InforMoveProducer(Component):
     _inherit = 'infor.jinja.producer'
     _apply_on = ['infor.account.move']
 
-    _template_path = 'connector_infor_account_move/messages/move.xml'
+    _template_path = 'connector_infor_account_move/messages/move.xml.tmpl'
 
     @staticmethod
     def _format_datetime(d):
@@ -144,6 +144,7 @@ class InforMoveProducer(Component):
                     elif base_object == 'backend':
                         self.backend_record.mapped(field_chain)
                 except:
+                    field_chain = ''
                     pass
             custom_field = {
                 'field_type': r.field_type,
