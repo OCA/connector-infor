@@ -63,8 +63,8 @@
       </JournalEntryHeader>
       {% for line in JOURNAL_LINES %}
       <JournalEntryLine sequence="{{ loop.index }}">
-        <Amount currencyID="{{ line.account_id.company_id.currency_id.name|default('', true) }}">{{ SEC_AMOUNT|default('', true) }}</Amount>
-        <FunctionalAmount currencyID="{{ COMPANY_CURRENCY|default('', true) }}">{{ COMPANY_AMOUNT|default('', true) }}</FunctionalAmount>
+        <Amount currencyID="{{ line.account_id.company_id.currency_id.name|default('', true) }}">{{ "%.5f"|format(line.credit or line.debit|default(0, true)) }}</Amount>
+        <FunctionalAmount currencyID="{{ COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(line.credit or line.debit|default(0, true)) }}</FunctionalAmount>
         <ReportingCurrencyAmount currencyID="{{ CURRENCY|default('', true) }}">0</ReportingCurrencyAmount>
         <GLAccount>
           <GLNominalAccount>{{ line.account_id.code|default('', true) }}</GLNominalAccount>
@@ -74,7 +74,7 @@
         </GLAccount>
         <DimensionCodes>
           {% for code in DIMENSION_CODES %}
-            {{ custom_field(loop.index, code, backend, line) }}
+            {{ custom_field(loop.index, code, BACKEND, line) }}
           {% endfor %}
         </DimensionCodes>
         {% if line.credit > 0 -%}
@@ -95,7 +95,7 @@
         <ExchangeRateDateTime>{{ TRANSACTION_DATE|default('', true) }}</ExchangeRateDateTime>
         <UserArea>
           {% for prop in PROPERTIES %}
-            {{ custom_field(loop.index, prop, backend, line) }}
+            {{ custom_field(loop.index, prop, BACKEND, line) }}
           {% endfor %}
         </UserArea>
       </JournalEntryLine>

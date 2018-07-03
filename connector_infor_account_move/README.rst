@@ -19,8 +19,7 @@ Configuration
 * Select the journals you want to sync and specify
   * the frequency of the sync
   * if journal entries should be summarized
-* Go to Accounting > Configuration > Accounting > Journals
-* Set the "Infor Journal ID" on your journals
+  * the "infor id" on the journals
 * Set the "Internal Reference" of each Odoo partner with their Infor ID
 * Make sure the account codes match between Odoo and Infor charts of accounts
 

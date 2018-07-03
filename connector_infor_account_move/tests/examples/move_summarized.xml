@@ -39,6 +39,42 @@
         </BaseJournalEntryHeader>
       </JournalEntryHeader>
         <JournalEntryLine sequence="1">
+          <Amount currencyID="USD">150.00000</Amount>
+          <FunctionalAmount currencyID="USD">150.00000</FunctionalAmount>
+          <ReportingCurrencyAmount currencyID="USD">0</ReportingCurrencyAmount>
+          <GLAccount>
+            <GLNominalAccount>PAY</GLNominalAccount>
+            <AccountingChartReference>
+              <ID>Acc</ID>
+            </AccountingChartReference>
+          </GLAccount>
+          <DimensionCodes>
+            <DimensionCode sequence="1" listID="Shape_of_the_earth">eliptic</DimensionCode>
+            <DimensionCode sequence="2" listID="Move_Line_Ref">never to hear</DimensionCode>
+            <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
+          </DimensionCodes>
+          <DebitCreditFlag>C</DebitCreditFlag>
+          <SourceAccountingDate>
+            <PeriodID></PeriodID>
+            <Year></Year>
+            <PostDateTime></PostDateTime>
+          </SourceAccountingDate>
+          <TransactionReferenceText></TransactionReferenceText>
+          <Description languageID="en_US"></Description>
+          <MemoAmount>
+            <AmountNumeric />
+          </MemoAmount>
+          <ExchangeRateDateTime></ExchangeRateDateTime>
+          <UserArea>
+            <Property sequence="1">
+              <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>
+            </Property>
+            <Property sequence="2">
+              <NameValue name="Prop_deux" type="String" unitCode="EA">not_to_be_seen</NameValue>
+            </Property>
+          </UserArea>
+        </JournalEntryLine>
+        <JournalEntryLine sequence="2">
           <Amount currencyID="USD">400.00000</Amount>
           <FunctionalAmount currencyID="USD">400.00000</FunctionalAmount>
           <ReportingCurrencyAmount currencyID="USD">0</ReportingCurrencyAmount>
@@ -55,12 +91,12 @@
           </DimensionCodes>
           <DebitCreditFlag>C</DebitCreditFlag>
           <SourceAccountingDate>
-            <PeriodID>6</PeriodID>
-            <Year>2018</Year>
+            <PeriodID></PeriodID>
+            <Year></Year>
             <PostDateTime></PostDateTime>
           </SourceAccountingDate>
           <TransactionReferenceText></TransactionReferenceText>
-          <Description languageID="en_US">STOCK-20180613</Description>
+          <Description languageID="en_US"></Description>
           <MemoAmount>
             <AmountNumeric />
           </MemoAmount>

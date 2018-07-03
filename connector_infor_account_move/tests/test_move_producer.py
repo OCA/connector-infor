@@ -19,6 +19,9 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
         cls.account = cls.env['account.account'].search([
             ('internal_type', '=', 'receivable')])
         cls.account.code = 'SPR'
+        cls.account_2 = cls.env['account.account'].search([
+            ('internal_type', '=', 'payable')])
+        cls.account_2.code = 'PAY'
         cls.journal = cls.create_journal()
         cls.move1 = cls.create_move_binding_1(cls.journal)
         cls.move2 = cls.create_move_binding_2(cls.journal)
@@ -31,6 +34,42 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'move_id': cls.move1.odoo_id.id,
             # number is related to move_id.name
             })
+        # Create another move
+        move = cls.env['account.move'].create({
+            'name': 'Test move 3',
+            'date': '2018-06-15',
+            'journal_id': cls.journal.id,
+            'state': 'draft',
+            'narration': 'nothing to say',
+            'line_ids': [
+                (0, 0, {
+                    'name': 'ying',
+                    'debit': 50,
+                    'account_id': cls.account_2.id,
+                    'ref': 'debit_line',
+                    }),
+                (0, 0, {
+                    'name': 'ying',
+                    'debit': 100,
+                    'account_id': cls.account_2.id,
+                    'ref': 'debit_line',
+                    }),
+                (0, 0, {
+                    'name': 'yang',
+                    'credit': 150,
+                    'account_id': cls.account_2.id,
+                    'ref': 'credit_line',
+                    })
+            ],
+        })
+        cls.move3 = cls.env['infor.account.move'].create({
+            'backend_id': cls.backend.id,
+            'name': 'test',
+            'date': '2018-06-14 14:16:18',
+            # 'journal_id': journal.id,
+            'odoo_id': move.id,
+        })
+
         # Prepare custom fields
         cls.custom_field = cls.env['infor.account.journal.custom.field']
         cls.dimension_static = cls.custom_field.create({
@@ -131,11 +170,11 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 MOVE_ID=str(self.move1.id),
                 TEST_DATE=self.move1.create_date,
             ).encode('utf8')
-            self.compare_xml_line_by_line(content, expected)
-            # self.assertXmlEquivalentOutputs(content, expected)
+            # self.compare_xml_line_by_line(content, expected)
+            self.assertXmlEquivalentOutputs(content, expected)
 
     def test_move_summarized(self):
-        moves = self.move1 + self.move2
+        moves = self.move1 + self.move2 + self.move3
         with self.backend.work_on('infor.account.move') as work:
             component = work.component(usage='message.producer')
             # we need bytes to parse with lxml otherwise it gets confused
@@ -205,7 +244,6 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
     def test_mapping_directly(self):
         with self.backend.work_on('infor.account.move') as work:
             component = work.component(usage='message.producer')
-            content = component._render_context(self.move1)
-        # Checking the formating of datetime
-        self.assertEqual(content.get('TRANSACTION_DATE'),
-                         '2018-06-13T00:00:00Z')
+            d = component._format_datetime('2018-06-13')
+            # Checking the formating of datetime
+            self.assertEqual(d, '2018-06-13T00:00:00Z')

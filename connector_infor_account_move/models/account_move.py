@@ -196,11 +196,8 @@ class InforMoveProducer(Component):
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
             'INVOICE_ID': invoice.id,
             'INVOICE_NUMBER': invoice.number or self._default_text(move),
-            # TODO Not in the xml template ?
             'ACCOUNTING_ENTITY_ID': move.id,
             'JOURNAL_CODE': move.journal_id.code,
-            # TODO Could not find this one in the xml file !?
-            'SEC_CURRENCY': move.currency_id.name,
             'CURRENCY': move.currency_id.name,
             # TODO Should not the amount be taken directely from the line
             #      in the template ?
@@ -217,7 +214,7 @@ class InforMoveProducer(Component):
             'TRANSACTION_DATE': self._format_datetime(move.date),
             'DIMENSION_CODES': dimension_codes,
             'PROPERTIES': properties,
-            'backend': self.backend_record,
+            'BACKEND': self.backend_record,
             'XML_VERSION': 'standard',
         })
         return context
@@ -236,13 +233,7 @@ class InforMoveProducer(Component):
         if len(company) > 1:
             company = company[0]
             # log warning multiple company moves ?!
-        # Compute the fiscal period if moves are in the same day
-        move_date = set(moves.mapped('date'))
-        if len(move_date) == 1:
-            fiscalyear, fiscal_period = self._compute_fiscal_time(
-                company, next(iter(move_date)))
-        else:
-            fiscalyear = fiscal_period = ''
+        fiscalyear = fiscal_period = ''
 
         dimension_codes, properties = self._prepare_custom_fields()
 
@@ -270,13 +261,10 @@ class InforMoveProducer(Component):
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
             'INVOICE_ID': '',
             'INVOICE_NUMBER': '',
-            # TODO Not in the xml template ?
             'ACCOUNTING_ENTITY_ID': '',
             'JOURNAL_CODE': '',
-            # TODO Could not find this one in the xml file !?
-            # 'SEC_CURRENCY': move.currency_id.name,
             'CURRENCY': currency,
-            'SEC_AMOUNT': self._format_numeric(sum(moves.mapped('amount'))),
+            'SEC_AMOUNT': 0, # self._format_numeric(sum(moves.mapped('amount'))),
             'COMPANY_CURRENCY': currency,
             'COMPANY_AMOUNT': self._format_numeric(
                 sum(moves.mapped('amount'))),

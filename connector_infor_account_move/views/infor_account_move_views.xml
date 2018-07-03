@@ -10,9 +10,10 @@
                 </header>
                 <sheet>
                     <group>
+                        <field name="odoo_id"/>
                         <field name="backend_id"/>
-                        <field name="infor_message_id"/>
                         <field name="infor_journal_id"/>
+                        <field name="infor_message_id"/>
                         <field name="sync_date"/>
                         <field name="create_date"/>
                     </group>
@@ -42,19 +43,18 @@
                 <field name="backend_id"/>
                 <field name="infor_journal_id"/>
             </search>
+            <group>
+              <filter string="Journal" domain="[]"
+                      name="groupby_journal"
+                      context="{'group_by':'infor_journal_id'}"
+              />
+              <filter string="Backend" domain="[]"
+                      name="groupby_backend"
+                      context="{'group_by':'backend_id'}"
+              />
+            </group>
         </field>
     </record>
-
-            <!-- <group> -->
-            <!--   <filter string="Journal" domain="[]" -->
-            <!--           name="groupby_journal" -->
-            <!--           context="{'group_by':'infor_journal_id'}" -->
-            <!--   /> -->
-            <!--   <filter string="Backend" domain="[]" -->
-            <!--           name="groupby_backend" -->
-            <!--           context="{'group_by':'backend_id'}" -->
-            <!--   /> -->
-            <!-- </group> -->
 
     <record id="action_infor_account_move" model="ir.actions.act_window">
         <field name="name">Infor Account Move</field>
