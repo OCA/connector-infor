@@ -199,12 +199,7 @@ class InforMoveProducer(Component):
             'ACCOUNTING_ENTITY_ID': move.id,
             'JOURNAL_CODE': move.journal_id.code,
             'CURRENCY': move.currency_id.name,
-            # TODO Should not the amount be taken directely from the line
-            #      in the template ?
-            'SEC_AMOUNT': self._format_numeric(move.amount),
             'COMPANY_CURRENCY': move.company_id.currency_id.name,
-            # TODO Convert
-            'COMPANY_AMOUNT': self._format_numeric(move.amount),
             'JOURNAL_LINES': move_lines,
             'FISCAL_PERIOD': fiscal_period,
             'FISCAL_YEAR': fiscalyear,
@@ -255,6 +250,7 @@ class InforMoveProducer(Component):
                 {'account_id': self.env['account.account'].browse(account_id),
                  'credit': amount,
                  'debit': 0,
+                 'currency_id': None,
                  })
         context.update({
             'CREATE_DATE': self._format_datetime(datetime.now()),
@@ -264,10 +260,7 @@ class InforMoveProducer(Component):
             'ACCOUNTING_ENTITY_ID': '',
             'JOURNAL_CODE': '',
             'CURRENCY': currency,
-            'SEC_AMOUNT': 0, # self._format_numeric(sum(moves.mapped('amount'))),
             'COMPANY_CURRENCY': currency,
-            'COMPANY_AMOUNT': self._format_numeric(
-                sum(moves.mapped('amount'))),
             'JOURNAL_LINES': summarized_lines,
             'FISCAL_PERIOD': fiscal_period,
             'FISCAL_YEAR': fiscalyear,
