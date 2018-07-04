@@ -43,14 +43,10 @@
                 <field name="backend_id"/>
                 <field name="infor_journal_id"/>
             </search>
-            <filter string="Journal" domain="[]"
-                    name="groupby_journal"
-                    context="{'group_by':'infor_journal_id'}"
-            />
-            <filter string="Backend" domain="[]"
-                    name="groupby_backend"
-                    context="{'group_by':'backend_id'}"
-            />
+            <group expand="0" string="Group By">
+                <filter string="Journal" name="journal" context="{'group_by':'infor_journal_id'}"/>
+                <filter string="Backend" name="backend" context="{'group_by':'backend_id'}"/>
+            </group>
         </field>
     </record>
 
