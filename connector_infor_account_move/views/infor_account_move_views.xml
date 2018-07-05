@@ -42,11 +42,11 @@
             <search string="Infor account move">
                 <field name="backend_id"/>
                 <field name="infor_journal_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Journal" name="journal" context="{'group_by':'infor_journal_id'}"/>
+                    <filter string="Backend" name="backend" context="{'group_by':'backend_id'}"/>
+                </group>
             </search>
-            <group expand="0" string="Group By">
-                <filter string="Journal" name="journal" context="{'group_by':'infor_journal_id'}"/>
-                <filter string="Backend" name="backend" context="{'group_by':'backend_id'}"/>
-            </group>
         </field>
     </record>
 
