@@ -41,7 +41,7 @@
         <JournalEntryLine sequence="1">
           <Amount currencyID="USD">150.00000</Amount>
           <FunctionalAmount currencyID="USD">150.00000</FunctionalAmount>
-          <ReportingCurrencyAmount currencyID="USD">0</ReportingCurrencyAmount>
+          <ReportingCurrencyAmount currencyID="EUR">0</ReportingCurrencyAmount>
           <GLAccount>
             <GLNominalAccount>SPR</GLNominalAccount>
             <AccountingChartReference>
@@ -77,7 +77,7 @@
         <JournalEntryLine sequence="2">
           <Amount currencyID="USD">150.00000</Amount>
           <FunctionalAmount currencyID="USD">150.00000</FunctionalAmount>
-          <ReportingCurrencyAmount currencyID="USD">0</ReportingCurrencyAmount>
+          <ReportingCurrencyAmount currencyID="EUR">0</ReportingCurrencyAmount>
           <GLAccount>
             <GLNominalAccount>SPR</GLNominalAccount>
             <AccountingChartReference>

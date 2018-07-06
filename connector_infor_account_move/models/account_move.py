@@ -211,6 +211,8 @@ class InforMoveProducer(Component):
             'PROPERTIES': properties,
             'BACKEND': self.backend_record,
             'XML_VERSION': 'standard',
+            'REPORTING_CURRENCY': 'EUR',
+            'REPORTING_AMOUNT': 0,
         })
         return context
 
@@ -271,6 +273,8 @@ class InforMoveProducer(Component):
             'PROPERTIES': properties,
             'backend': self.backend_record,
             'XML_VERSION': 'summarized',
+            'REPORTING_CURRENCY': 'EUR',
+            'REPORTING_AMOUNT': 0,
         })
         return context
 
