@@ -179,6 +179,15 @@ class InforMoveProducer(Component):
         fiscal_period = 12 - abs(move_date.month - fiscal_term.month)
         return fiscal_term.year, fiscal_period
 
+    @staticmethod
+    def _compute_variation_id():
+        """Compute the variation id
+
+        Needs to be a unique value and each dispatch should have a higher
+        value than the previous one.
+        """
+        return datetime.now().strftime('%Y%m%d%H%M%S%f')
+
     def _render_context_unique(self, context, move):
         """Jinja context for a single account move."""
         move_lines = move.line_ids.filtered(
@@ -194,6 +203,7 @@ class InforMoveProducer(Component):
         context.update({
             'CREATE_DATE': self._format_datetime(datetime.now()),
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
+            'VARIATION_ID': self._compute_variation_id(),
             'INVOICE_ID': invoice.id,
             'INVOICE_NUMBER': invoice.number or self._default_text(move),
             'ACCOUNTING_ENTITY_ID': move.id,
@@ -257,6 +267,7 @@ class InforMoveProducer(Component):
         context.update({
             'CREATE_DATE': self._format_datetime(datetime.now()),
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
+            'VARIATION_ID': self._compute_variation_id(),
             'INVOICE_ID': '',
             'INVOICE_NUMBER': '',
             'ACCOUNTING_ENTITY_ID': '',

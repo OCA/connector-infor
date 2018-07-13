@@ -42,7 +42,7 @@
     </{{VERB}}>
     <SourceSystemJournalEntry>
       <JournalEntryHeader>
-        <JournalID accountingEntity="{{ BUSINESS_UNIT }}" variationID="">{{ INVOICE_ID|default('', true) }}</JournalID>
+        <JournalID accountingEntity="{{ BUSINESS_UNIT }}" variationID="{{ VARIATION_ID }}">{{ INVOICE_ID|default('', true) }}</JournalID>
         <DisplayID>{{ INVOICE_ID|default('', true) }}</DisplayID>
         <BaseJournalEntryHeader>
           <LedgerID>A</LedgerID>

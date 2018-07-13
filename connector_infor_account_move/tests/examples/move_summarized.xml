@@ -19,7 +19,7 @@
     </Sync>
     <SourceSystemJournalEntry>
       <JournalEntryHeader>
-        <JournalID accountingEntity="Acc" variationID="">$INVOICE_ID</JournalID>
+        <JournalID accountingEntity="Acc" variationID="20180618170700000000">$INVOICE_ID</JournalID>
         <DisplayID>$INVOICE_ID</DisplayID>
         <BaseJournalEntryHeader>
           <LedgerID>A</LedgerID>
