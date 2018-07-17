@@ -203,6 +203,7 @@ class InforMoveProducer(Component):
         context.update({
             'CREATE_DATE': self._format_datetime(datetime.now()),
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
+            'COMPONENT_ID': self.backend_record.component_id,
             'VARIATION_ID': self._compute_variation_id(),
             'INVOICE_ID': invoice.id,
             'INVOICE_NUMBER': invoice.number or self._default_text(move),
@@ -267,6 +268,7 @@ class InforMoveProducer(Component):
         context.update({
             'CREATE_DATE': self._format_datetime(datetime.now()),
             'BUSINESS_UNIT': self.backend_record.accounting_entity_id,
+            'COMPONENT_ID': self.backend_record.component_id,
             'VARIATION_ID': self._compute_variation_id(),
             'INVOICE_ID': '',
             'INVOICE_NUMBER': '',
