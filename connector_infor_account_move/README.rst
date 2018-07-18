@@ -13,15 +13,40 @@ Infor using the Process verb and a BOD file such as this one:
 Configuration
 =============
 
-
 * Go to Settings > Connectors > Infor Backends
-* Create a new backend
-* Select the journals you want to sync and specify
+
+Create a new backend
+--------------------
+
+* Set the type of synchronization for now only 'File' is implemented.
+* Select where the files will be written by creating a 'File Backend', local file system or sftp.
+* Set the message headers fields.
+
+Set the journals to synchronize
+-------------------------------
+
+* Select the journals you want to sync and specify for each one
   * the frequency of the sync
-  * if journal entries should be summarized
+  * if journal entries should be summarized (account moves are grouped by account id)
   * the "infor id" on the journals
-* Set the "Internal Reference" of each Odoo partner with their Infor ID
 * Make sure the account codes match between Odoo and Infor charts of accounts
+
+Add custom fields
+-----------------
+
+Custom fields are added to each JournalEntryLine they can be of two different data types :
+
+Static fields are added with a the predefined defualt value.
+
+Dynamic fields are computed in the record fields hierarchy based on the field name 'field'.
+If starting with 'object.' the account.move.line record will be used as a base.
+If starting by 'backend.' then the infor.backend record is used.
+If the field can not be resolved the data in 'default_value' will be used instead.
+
+Set up partners
+--------------------
+
+Set the "Internal Reference" of each Odoo partner with their Infor ID
 
 
 Bug Tracker
@@ -44,6 +69,8 @@ Contributors
 ------------
 
 * Bhavesh Odedra <bodedra@opensourceintegrators.com>
+* Guewen Baconnier <guewen.baconnier@camptocamp.com>
+* Thierry Ducrest <thierry.ducrest@camptocamp.com>
 
 Funders
 -------
