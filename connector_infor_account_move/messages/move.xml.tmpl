@@ -25,7 +25,7 @@
 {%- endmacro %}
     <Sender>
       <LogicalID schemeVersionID="6.02.01.0188">lid://infor.sunsystems.1</LogicalID>
-      <ComponentID>{{ COMPONENT_ID }}</ComponentID>
+      <ComponentID>{{ COMPONENT_ID|default('', true) }}</ComponentID>
       <ConfirmationCode>Always</ConfirmationCode>
       <AuthorizationID />
     </Sender>
