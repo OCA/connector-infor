@@ -15,7 +15,6 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-
         cls.account = cls.env['account.account'].search([
             ('internal_type', '=', 'receivable')])
         cls.account.code = 'SPR'
@@ -69,6 +68,45 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             # 'journal_id': journal.id,
             'odoo_id': move.id,
         })
+        # Account move with foreign currency
+        move_usd = cls.env['account.move'].create({
+            'name': 'Test move USD',
+            'date': '2018-06-15',
+            'journal_id': cls.journal.id,
+            'state': 'draft',
+            'narration': 'nothing to say',
+            'line_ids': [
+                (0, 0, {
+                    'name': 'ying',
+                    'amount_currency': 100,
+                    'debit': 83.33,
+                    'currency_id': cls.env.ref('base.EUR').id,
+                    'account_id': cls.account_2.id,
+                    'ref': 'debit_line',
+                    }),
+                (0, 0, {
+                    'name': 'yang',
+                    'amount_currency': -100,
+                    'credit': 83.33,
+                    'currency_id': cls.env.ref('base.EUR').id,
+                    'account_id': cls.account_2.id,
+                    'ref': 'credit_line',
+                    })
+            ],
+        })
+        cls.move_usd = cls.env['infor.account.move'].create({
+            'backend_id': cls.backend.id,
+            'name': 'test usd',
+            'date': '2018-06-14 14:16:18',
+            # 'journal_id': journal.id,
+            'odoo_id': move_usd.id,
+        })
+        cls.invoice_usd = cls.env['account.invoice'].create({
+            'journal_id': cls.journal.id,
+            'partner_id': cls.partner.id,
+            'move_id': cls.move_usd.odoo_id.id,
+            # number is related to move_id.name
+            })
 
         # Prepare custom fields
         cls.custom_field = cls.env['infor.account.journal.custom.field']
@@ -152,7 +190,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             self.assertEqual(period, 11)
 
     def test_move_not_summarized(self):
-        """ """
+        """Generate an xml file for one account move and compare."""
         with self.backend.work_on('infor.account.move') as work:
             component = work.component(usage='message.producer')
             # we need bytes to parse with lxml otherwise it gets confused
@@ -174,6 +212,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             self.assertXmlEquivalentOutputs(content, expected)
 
     def test_move_summarized(self):
+        """Generate an xml file for multiple account move and compare"""
         moves = self.move1 + self.move2 + self.move3
         with self.backend.work_on('infor.account.move') as work:
             component = work.component(usage='message.producer')
@@ -191,6 +230,28 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 INVOICE_ID='',
                 MOVE_ID='',
                 TEST_DATE=self.move1.create_date,
+            ).encode('utf8')
+            # self.compare_xml_line_by_line(content, expected)
+            self.assertXmlEquivalentOutputs(content, expected)
+
+    def test_move_not_summarized_currency(self):
+        """Generate xml file for one account move with foreign currency."""
+        with self.backend.work_on('infor.account.move') as work:
+            component = work.component(usage='message.producer')
+            # we need bytes to parse with lxml otherwise it gets confused
+            # by the encoding header in the file
+            content = component.produce(self.move_usd).encode('utf8')
+            self.assertXmlDocument(content)
+            # Load expected result from file setting some values as they can
+            # not be predicted
+            test_file = Template(self.read_test_file(
+                'connector_infor_account_move/tests/'
+                'examples/move_not_summarized_currency.xml')
+            )
+            expected = test_file.substitute(
+                INVOICE_ID=str(self.invoice_usd.id),
+                MOVE_ID=str(self.move_usd.id),
+                TEST_DATE=self.move_usd.create_date,
             ).encode('utf8')
             # self.compare_xml_line_by_line(content, expected)
             self.assertXmlEquivalentOutputs(content, expected)
