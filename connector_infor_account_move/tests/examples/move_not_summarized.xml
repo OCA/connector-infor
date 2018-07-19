@@ -60,7 +60,7 @@
             <PostDateTime>$TEST_DATE</PostDateTime>
           </SourceAccountingDate>
           <TransactionReferenceText>test</TransactionReferenceText>
-          <Description languageID="en_US">STOCK-20180613</Description>
+          <Description languageID="en_US">STJ-20180613</Description>
           <MemoAmount>
             <AmountNumeric />
           </MemoAmount>
@@ -96,7 +96,7 @@
             <PostDateTime>$TEST_DATE</PostDateTime>
           </SourceAccountingDate>
           <TransactionReferenceText>test</TransactionReferenceText>
-          <Description languageID="en_US">STOCK-20180613</Description>
+          <Description languageID="en_US">STJ-20180613</Description>
           <MemoAmount>
             <AmountNumeric />
           </MemoAmount>

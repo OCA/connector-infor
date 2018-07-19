@@ -120,7 +120,7 @@ class InforMoveProducer(Component):
         dates = set(moves.mapped('date'))
         if len(dates) == 1:
             date = next(iter(dates))
-            return 'STOCK-{}'.format(''.join(date.split('-')))
+            return 'STJ-{}'.format(''.join(date.split('-')))
         else:
             return ''
 
