@@ -25,8 +25,8 @@ class InforBackendJournalCustomField(models.Model):
         help='Dynamicaly computed in a record fields hierarchy. If starting '
              'by "object." the account.move.line will be used as base. If '
              'starting by "backend." then the infor.backend is used.'
-             'If the field can not be resolved the value in "default_value" will '
-             'be used instead.',
+             'If the field can not be resolved the value in "default_value" '
+             'wil be used instead.',
     )
     field_default_value = fields.Char(
         string='Default Value',
