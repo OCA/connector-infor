@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?> <{{VERB}}SourceSystemJournalEntry xsi:schemaLocation="http://schema.infor.com/InforOAGIS/2 http://schema.infor.com/2.9.0/InforOAGIS/BODs/Developer/{{VERB}}SourceSystemJournalEntry.xsd" releaseID="9.2" versionID="2.9.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.infor.com/InforOAGIS/2">
   <ApplicationArea>
 {% macro custom_field(index, custom_field, backend, moveline) -%}
-            {% if custom_field.data_type == 'static' %}
-              {% set field_value = custom_field.value %}
-            {% elif not custom_field.value or XML_VERSION=='summarized' %}
+            {% if custom_field.data_type == 'static' -%}
+              {% set field_value = custom_field.value -%}
+            {% elif not custom_field.value or XML_VERSION=='summarized' -%}
               {# Dynamic custom field with bad field chain #}
-              {% set field_value = custom_field.default %}
-            {% else %}
-              {% if custom_field.base_object == 'backend' %}
-                {% set base_object = backend %}
-              {% else %}
-                {% set base_object = moveline %}
-              {% endif %}
-              {% set field_value = base_object.mapped(custom_field.value)[0] %}
-              {# TODO add custom_field.default if field_value is empty #}
-            {% endif %}
-            {% if custom_field.field_type == 'dimensioncode' %}
+              {% set field_value = custom_field.default -%}
+            {% else -%}
+              {% if custom_field.base_object == 'backend' -%}
+                {% set base_object = backend -%}
+              {% else -%}
+                {% set base_object = moveline -%}
+              {% endif -%}
+              {% set field_value = base_object.mapped(custom_field.value)[0] -%}
+              {# TODO add custom_field.default if field_value is empty -#}
+            {% endif -%}
+            {% if custom_field.field_type == 'dimensioncode' -%}
               <DimensionCode sequence="{{ index }}" listID="{{ custom_field.name|default('', true) }}">{{ field_value|default('', true) }}</DimensionCode>
-            {% elif custom_field.field_type == 'property' %}
+            {% elif custom_field.field_type == 'property' -%}
             <Property sequence="{{ index }}">
               <NameValue name="{{ custom_field.name|default('', true) }}" type="String" unitCode="EA">{{ field_value|default('', true) }}</NameValue>
             </Property>
-            {% endif %}
-{%- endmacro %}
+            {% endif -%}
+{% endmacro -%}
     <Sender>
       <LogicalID schemeVersionID="6.02.01.0188">lid://infor.sunsystems.1</LogicalID>
       <ComponentID>{{ COMPONENT_ID|default('', true) }}</ComponentID>
@@ -61,7 +61,7 @@
           </JournalStatus>
         </BaseJournalEntryHeader>
       </JournalEntryHeader>
-      {% for line in JOURNAL_LINES %}
+      {% for line in JOURNAL_LINES -%}
       <JournalEntryLine sequence="{{ loop.index }}">
         <Amount currencyID="{{ line.currency_id.name or COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(abs(line.amount_currency or line.credit or line.debit)|default(0, true)) }}</Amount>
         <FunctionalAmount currencyID="{{ COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(line.credit or line.debit|default(0, true)) }}</FunctionalAmount>
@@ -73,15 +73,15 @@
           </AccountingChartReference>
         </GLAccount>
         <DimensionCodes>
-          {% for code in DIMENSION_CODES %}
+          {% for code in DIMENSION_CODES -%}
             {{ custom_field(loop.index, code, BACKEND, line) }}
-          {% endfor %}
+          {%- endfor -%}
         </DimensionCodes>
         {% if line.credit > 0 -%}
             <DebitCreditFlag>C</DebitCreditFlag>
-        {% else %}
+        {% else -%}
             <DebitCreditFlag>D</DebitCreditFlag>
-        {% endif %}
+        {% endif -%}
         <SourceAccountingDate>
           <PeriodID>{{ FISCAL_PERIOD|default('',  true) }}</PeriodID>
           <Year>{{ FISCAL_YEAR|default('', true) }}</Year>
@@ -94,9 +94,9 @@
         </MemoAmount>
         <ExchangeRateDateTime>{{ TRANSACTION_DATE|default('', true) }}</ExchangeRateDateTime>
         <UserArea>
-          {% for prop in PROPERTIES %}
+          {% for prop in PROPERTIES -%}
             {{ custom_field(loop.index, prop, BACKEND, line) }}
-          {% endfor %}
+          {%- endfor -%}
         </UserArea>
       </JournalEntryLine>
       {% endfor %}
