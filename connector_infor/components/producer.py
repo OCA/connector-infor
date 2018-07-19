@@ -1,6 +1,8 @@
 # Copyright 2018 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from datetime import datetime
+from odoo.fields import Datetime as DatetimeField
 from odoo.tools import file_open, ustr
 from odoo.addons.component.core import AbstractComponent
 
@@ -28,6 +30,18 @@ class InforJinjaProducer(AbstractComponent):
 
     # path to a jinja2 template file
     _template_path = None
+
+    @staticmethod
+    def _format_datetime(d):
+        """Format a datetime in the format expected by Infor."""
+        if not isinstance(d, datetime):
+            try:
+                d = DatetimeField.from_string(d)
+            except ValueError:
+                d = None
+        if d:
+            return d.isoformat() + 'Z'
+        return ''
 
     @property
     def _template(self):
@@ -61,4 +75,5 @@ class InforJinjaProducer(AbstractComponent):
         mako_template_env.comment_start_string = "{#"
         mako_template_env.comment_end_string = "#}"
         template = mako_template_env.from_string(ustr(template_txt))
+        template.globals['format_datetime'] = self._format_datetime
         return template.render(**self._render_context(records))

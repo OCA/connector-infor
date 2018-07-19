@@ -103,13 +103,6 @@ class InforMoveProducer(Component):
     _template_path = 'connector_infor_account_move/messages/move.xml.tmpl'
 
     @staticmethod
-    def _format_datetime(d):
-        """Format a datetime in the format expected by Infor."""
-        if isinstance(d, str):
-            d = fields.Datetime.from_string(d)
-        return d.isoformat() + 'Z'
-
-    @staticmethod
     def _format_numeric(n):
         """Format monetary value."""
         return '{0:.5f}'.format(n)

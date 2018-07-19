@@ -5,6 +5,7 @@ from string import Template
 from freezegun import freeze_time
 
 from odoo.addons.connector_infor.tests.common import InforTestCase
+from odoo.addons.connector_infor.components.producer import InforJinjaProducer
 
 from .common import AccountMoveMixin
 
@@ -206,7 +207,8 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             expected = test_file.substitute(
                 INVOICE_ID=str(self.invoice.id),
                 MOVE_ID=str(self.move1.id),
-                TEST_DATE=self.move1.create_date,
+                TEST_DATE=InforJinjaProducer._format_datetime(
+                    self.move1.create_date),
             ).encode('utf8')
             # self.compare_xml_line_by_line(content, expected)
             self.assertXmlEquivalentOutputs(content, expected)
@@ -251,7 +253,8 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             expected = test_file.substitute(
                 INVOICE_ID=str(self.invoice_usd.id),
                 MOVE_ID=str(self.move_usd.id),
-                TEST_DATE=self.move_usd.create_date,
+                TEST_DATE=InforJinjaProducer._format_datetime(
+                    self.move_usd.create_date),
             ).encode('utf8')
             # self.compare_xml_line_by_line(content, expected)
             self.assertXmlEquivalentOutputs(content, expected)

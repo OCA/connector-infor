@@ -85,7 +85,7 @@
         <SourceAccountingDate>
           <PeriodID>{{ FISCAL_PERIOD|default('',  true) }}</PeriodID>
           <Year>{{ FISCAL_YEAR|default('', true) }}</Year>
-          <PostDateTime>{{ line.create_date|default('', true) }}</PostDateTime>
+          <PostDateTime>{{ format_datetime(line.create_date)|default('', true) }}</PostDateTime>
         </SourceAccountingDate>
         <TransactionReferenceText>{{ INVOICE_NUMBER|default('', true) }}</TransactionReferenceText>
         <Description languageID="{{ LANGUAGE|default('', true) }}">{{ DESCRIPTION|default('', true) }}</Description>
