@@ -53,6 +53,7 @@ Contributors
 
 * Bhavesh Odedra <bodedra@opensourceintegrators.com>
 * Guewen Baconnier <guewen.baconnier@camptocamp.com>
+* Thierry Ducrest <thierry.ducrest@camptocamp.com>
 
 Funders
 -------
