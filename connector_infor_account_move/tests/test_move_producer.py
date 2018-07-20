@@ -22,14 +22,17 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
         cls.account_2 = cls.env['account.account'].search([
             ('internal_type', '=', 'payable')])
         cls.account_2.code = 'PAY'
-        cls.journal = cls.create_journal()
-        cls.move1 = cls.create_move_binding_1(cls.journal)
-        cls.move2 = cls.create_move_binding_2(cls.journal)
+        cls.journal_1 = cls.create_journal()
+        cls.journal_1.code = 'YOP'
+        cls.journal_2 = cls.create_journal()
+        cls.journal_2.code = 'ZUK'
+        cls.move1 = cls.create_move_binding_1(cls.journal_1)
+        cls.move2 = cls.create_move_binding_2(cls.journal_1)
         cls.partner = cls.env['res.partner'].create({
             'name': 'Test partner'
             })
         cls.invoice = cls.env['account.invoice'].create({
-            'journal_id': cls.journal.id,
+            'journal_id': cls.journal_1.id,
             'partner_id': cls.partner.id,
             'move_id': cls.move1.odoo_id.id,
             # number is related to move_id.name
@@ -38,7 +41,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
         move = cls.env['account.move'].create({
             'name': 'Test move 3',
             'date': '2018-06-15',
-            'journal_id': cls.journal.id,
+            'journal_id': cls.journal_2.id,
             'state': 'draft',
             'narration': 'nothing to say',
             'line_ids': [
@@ -66,14 +69,13 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'backend_id': cls.backend.id,
             'name': 'test',
             'date': '2018-06-14 14:16:18',
-            # 'journal_id': journal.id,
             'odoo_id': move.id,
         })
         # Account move with foreign currency
         move_usd = cls.env['account.move'].create({
             'name': 'Test move USD',
             'date': '2018-06-15',
-            'journal_id': cls.journal.id,
+            'journal_id': cls.journal_1.id,
             'state': 'draft',
             'narration': 'nothing to say',
             'line_ids': [
@@ -99,14 +101,12 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'backend_id': cls.backend.id,
             'name': 'test usd',
             'date': '2018-06-14 14:16:18',
-            # 'journal_id': journal.id,
             'odoo_id': move_usd.id,
         })
         cls.invoice_usd = cls.env['account.invoice'].create({
-            'journal_id': cls.journal.id,
+            'journal_id': cls.journal_1.id,
             'partner_id': cls.partner.id,
             'move_id': cls.move_usd.odoo_id.id,
-            # number is related to move_id.name
             })
 
         # Prepare custom fields
@@ -311,3 +311,13 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             d = component._format_datetime('2018-06-13')
             # Checking the formating of datetime
             self.assertEqual(d, '2018-06-13T00:00:00Z')
+
+    def test_default_text(self):
+        with self.backend.work_on('infor.account.move') as work:
+            component = work.component(usage='message.producer')
+            txt = component._default_text(self.move1)
+            self.assertEqual(txt, 'YOP-20180613')
+            txt = component._default_text(self.move3)
+            self.assertEqual(txt, 'ZUK-20180614')
+            txt = component._default_text(self.move1 + self.move3)
+            self.assertEqual(txt, '')

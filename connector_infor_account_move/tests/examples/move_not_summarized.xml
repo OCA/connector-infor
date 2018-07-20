@@ -25,7 +25,7 @@
           <LedgerID>A</LedgerID>
           <LedgerType>Actual</LedgerType>
           <AccountingJournalReference>
-            <ID>TEST</ID>
+            <ID>YOP</ID>
           </AccountingJournalReference>
           <LedgerSetupReference>
             <DocumentID>
@@ -60,7 +60,7 @@
             <PostDateTime>$TEST_DATE</PostDateTime>
           </SourceAccountingDate>
           <TransactionReferenceText>test</TransactionReferenceText>
-          <Description languageID="en_US">STJ-20180613</Description>
+          <Description languageID="en_US">YOP-20180613</Description>
           <MemoAmount>
             <AmountNumeric />
           </MemoAmount>
@@ -70,7 +70,7 @@
               <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>
             </Property>
             <Property sequence="2">
-              <NameValue name="Prop_deux" type="String" unitCode="EA">TEST</NameValue>
+              <NameValue name="Prop_deux" type="String" unitCode="EA">YOP</NameValue>
             </Property>
           </UserArea>
         </JournalEntryLine>
@@ -96,7 +96,7 @@
             <PostDateTime>$TEST_DATE</PostDateTime>
           </SourceAccountingDate>
           <TransactionReferenceText>test</TransactionReferenceText>
-          <Description languageID="en_US">STJ-20180613</Description>
+          <Description languageID="en_US">YOP-20180613</Description>
           <MemoAmount>
             <AmountNumeric />
           </MemoAmount>
@@ -106,7 +106,7 @@
               <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>
             </Property>
             <Property sequence="2">
-              <NameValue name="Prop_deux" type="String" unitCode="EA">TEST</NameValue>
+              <NameValue name="Prop_deux" type="String" unitCode="EA">YOP</NameValue>
             </Property>
           </UserArea>
         </JournalEntryLine>

@@ -111,9 +111,12 @@ class InforMoveProducer(Component):
     def _default_text(moves):
         """Default description for some field."""
         dates = set(moves.mapped('date'))
-        if len(dates) == 1:
-            date = next(iter(dates))
-            return 'STJ-{}'.format(''.join(date.split('-')))
+        codes = set(moves.mapped('journal_id.code'))
+        if len(dates) == 1 and len(codes) == 1:
+            return '{}-{}'.format(
+                next(iter(codes)),
+                ''.join(next(iter(dates)).split('-'))
+            )
         else:
             return ''
 
