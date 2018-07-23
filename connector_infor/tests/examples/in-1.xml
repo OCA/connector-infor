@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?> <{{VERB}}SourceSystemTest>
+  <ApplicationArea>
+    <Verb>{{VERB}}</Verb>
+    <TenantID>{{TENANT_ID}}</TenantID>
+    <Name>{{NAME}}</Name>
+  </ApplicationArea>
+</{{VERB}}SourceSystemTest>

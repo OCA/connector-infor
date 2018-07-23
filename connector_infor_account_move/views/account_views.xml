@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<odoo>
+<!-- Copyright 2018 Open Source Integrators
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record id="view_move_infor_transaction_form" model="ir.ui.view">
+        <field name="name">account.move.infor.backend.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="journal_id" position="after">
+                <field name="infor_bind_ids"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

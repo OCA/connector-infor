@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<odoo>
+<!-- Copyright 2018 Open Source Integrators
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record id="view_infor_account_journal_form" model="ir.ui.view">
+        <field name="name">infor.account.journal.form</field>
+        <field name="model">infor.backend</field>
+        <field name="inherit_id" ref="connector_infor.view_infor_backend_form"/>
+        <field name="arch" type="xml">
+            <page position="after">
+                <page string="Journals" name="account_journals">
+                    <field name="infor_journal_ids">
+                        <tree editable="bottom">
+                            <field name="odoo_id"/>
+                            <field name="frequency"/>
+                            <field name="is_cron" invisible="1"/>
+                            <field name="use_summarize_entry"/>
+                            <field name="external_id"/>
+                            <button name="generate_all_messages" type="object"
+                                    string="Post to Infor"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Custom Fields" name="custom_fields">
+                    <field name="infor_journal_custom_field_ids">
+                        <form string="Custom Field">
+                            <group>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="field_type"/>
+                                    <field name="data_type"/>
+                                    <field name="field_value" attrs="{'invisible': [('data_type', '!=', 'static')]}"/>
+                                </group>
+                                <group>
+                                    <field name="field" attrs="{'invisible': [('data_type', '!=', 'dynamic')]}"/>
+                                    <field name="field_default_value" attrs="{'invisible': [('data_type', '!=', 'dynamic')]}"/>
+                                </group>
+                            </group>
+                        </form>
+                        <tree>
+                            <field name="name"/>
+                            <field name="field_type"/>
+                            <field name="data_type"/>
+                            <field name="field_value"/>
+                            <field name="field_default_value"/>
+                        </tree>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+</odoo>

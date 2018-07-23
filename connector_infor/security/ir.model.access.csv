@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_infor_backend_user,access_infor_backend_user,model_infor_backend,base.group_user,1,0,0,0
+access_infor_backend_manager,access_infor_backend_user,model_infor_backend,connector_infor.group_infor_connector_manager,1,1,1,1
+access_infor_message_user,access_infor_message,model_infor_message,base.group_user,1,0,0,0
+access_infor_message_manager,access_infor_message,model_infor_message,connector_infor.group_infor_connector_manager,1,1,1,1

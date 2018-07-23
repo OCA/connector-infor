@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="seq_infor_message" model="ir.sequence">
+        <field name="name">Infor Messages</field>
+        <field name="code">infor.message</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

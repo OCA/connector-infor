@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="view_infor_account_move_form" model="ir.ui.view">
+        <field name="name">infor.account.move.form</field>
+        <field name="model">infor.account.move</field>
+        <field name="arch" type="xml">
+            <form string="Infor Account Move" delete="false" create="false">
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="odoo_id"/>
+                        <field name="backend_id"/>
+                        <field name="infor_journal_id"/>
+                        <field name="infor_message_id"/>
+                        <field name="sync_date"/>
+                        <field name="create_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_infor_account_move_tree" model="ir.ui.view">
+        <field name="name">infor.account.move.tree</field>
+        <field name="model">infor.account.move</field>
+        <field name="arch" type="xml">
+            <tree delete="false" create="false">
+                <field name="backend_id"/>
+                <field name="infor_journal_id"/>
+                <field name="sync_date"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_infor_account_move_search" model="ir.ui.view">
+        <field name="name">infor.account.move.search</field>
+        <field name="model">infor.account.move</field>
+        <field name="arch" type="xml">
+            <search string="Infor account move">
+                <field name="backend_id"/>
+                <field name="infor_journal_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Journal" name="journal" context="{'group_by':'infor_journal_id'}"/>
+                    <filter string="Backend" name="backend" context="{'group_by':'backend_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_infor_account_move" model="ir.actions.act_window">
+        <field name="name">Infor Account Move</field>
+        <field name="res_model">infor.account.move</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_infor_account_move_tree"/>
+    </record>
+
+    <menuitem id="menu_infor_account_move"
+        parent="connector_infor.menu_infor"
+        name="Account Move"
+        action="action_infor_account_move"
+        sequence="40"
+    />
+
+</odoo>
+

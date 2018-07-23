@@ -1,9 +1,6 @@
 language: python
 sudo: false
-cache:
-  apt: true
-  directories:
-    - $HOME/.cache/pip
+cache: pip
 
 python:
   - "3.5"
@@ -16,6 +13,7 @@ addons:
       - python-simplejson
       - python-serial
       - python-yaml
+    postgresql: "9.5"
 
 env:
   global:
@@ -31,9 +29,6 @@ env:
   - TRANSIFEX="1"
   - TESTS="1" ODOO_REPO="odoo/odoo"
   - TESTS="1" ODOO_REPO="OCA/OCB"
-
-virtualenv:
-  system_site_packages: true
 
 install:
   - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools

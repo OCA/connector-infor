@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?> <SyncSourceSystemTest>
+  <ApplicationArea>
+    <Verb>Sync</Verb>
+    <TenantID>Infor</TenantID>
+    <Name>YourCompany</Name>
+  </ApplicationArea>
+</SyncSourceSystemTest>

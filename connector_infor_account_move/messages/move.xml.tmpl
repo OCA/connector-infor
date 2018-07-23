@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?> <{{VERB}}SourceSystemJournalEntry xsi:schemaLocation="http://schema.infor.com/InforOAGIS/2 http://schema.infor.com/2.9.0/InforOAGIS/BODs/Developer/{{VERB}}SourceSystemJournalEntry.xsd" releaseID="9.2" versionID="2.9.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.infor.com/InforOAGIS/2">
+  <ApplicationArea>
+{% macro custom_field(index, custom_field, backend, moveline) -%}
+            {% if custom_field.data_type == 'static' -%}
+              {% set field_value = custom_field.value -%}
+            {% elif not custom_field.value or XML_VERSION=='summarized' -%}
+              {# Dynamic custom field with bad field chain #}
+              {% set field_value = custom_field.default -%}
+            {% else -%}
+              {% if custom_field.base_object == 'backend' -%}
+                {% set base_object = backend -%}
+              {% else -%}
+                {% set base_object = moveline -%}
+              {% endif -%}
+              {% set field_value = base_object.mapped(custom_field.value)[0] -%}
+              {# TODO add custom_field.default if field_value is empty -#}
+            {% endif -%}
+            {% if custom_field.field_type == 'dimensioncode' -%}
+              <DimensionCode sequence="{{ index }}" listID="{{ custom_field.name|default('', true) }}">{{ field_value|default('', true) }}</DimensionCode>
+            {% elif custom_field.field_type == 'property' -%}
+            <Property sequence="{{ index }}">
+              <NameValue name="{{ custom_field.name|default('', true) }}" type="String" unitCode="EA">{{ field_value|default('', true) }}</NameValue>
+            </Property>
+            {% endif -%}
+{% endmacro -%}
+    <Sender>
+      <LogicalID schemeVersionID="6.02.01.0188">lid://infor.sunsystems.1</LogicalID>
+      <ComponentID>{{ COMPONENT_ID|default('', true) }}</ComponentID>
+      <ConfirmationCode>Always</ConfirmationCode>
+      <AuthorizationID />
+    </Sender>
+    <CreationDateTime>{{ CREATE_DATE }}</CreationDateTime>
+    <BODID>Infor-nid:Infor:{{ BUSINESS_UNIT|default('', true) }}::{{ INVOICE_ID|default('', true) }}:0?SourceSystemJournalEntry&amp;verb={{ VERB }}</BODID>
+  </ApplicationArea>
+  <DataArea>
+    <{{VERB}}>
+      <TenantID>{{ TENANT_ID|default('', true) }}</TenantID>
+      <AccountingEntityID>{{ ACCOUNTING_ENTITY_ID|default('', true) }}</AccountingEntityID>
+      <ActionCriteria>
+        <ActionExpression actionCode="Add" />
+      </ActionCriteria>
+    </{{VERB}}>
+    <SourceSystemJournalEntry>
+      <JournalEntryHeader>
+        <JournalID accountingEntity="{{ BUSINESS_UNIT }}" variationID="{{ VARIATION_ID }}">{{ INVOICE_ID|default('', true) }}</JournalID>
+        <DisplayID>{{ INVOICE_ID|default('', true) }}</DisplayID>
+        <BaseJournalEntryHeader>
+          <LedgerID>A</LedgerID>
+          <LedgerType>Actual</LedgerType>
+          <AccountingJournalReference>
+            <ID>{{ JOURNAL_CODE|default('', true) }}</ID>
+          </AccountingJournalReference>
+          <LedgerSetupReference>
+            <DocumentID>
+              <ID>A</ID>
+            </DocumentID>
+            <BookInstanceID>A</BookInstanceID>
+          </LedgerSetupReference>
+          <JournalStatus>
+            <Code>Final</Code>
+          </JournalStatus>
+        </BaseJournalEntryHeader>
+      </JournalEntryHeader>
+      {% for line in JOURNAL_LINES -%}
+      <JournalEntryLine sequence="{{ loop.index }}">
+        <Amount currencyID="{{ line.currency_id.name or COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(abs(line.amount_currency or line.credit or line.debit)|default(0, true)) }}</Amount>
+        <FunctionalAmount currencyID="{{ COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(line.credit or line.debit|default(0, true)) }}</FunctionalAmount>
+        <ReportingCurrencyAmount currencyID="{{ REPORTING_CURRENCY|default('', true) }}">{{ REPORTING_AMOUNT}}</ReportingCurrencyAmount>
+        <GLAccount>
+          <GLNominalAccount>{{ line.account_id.code|default('', true) }}</GLNominalAccount>
+          <AccountingChartReference>
+            <ID>{{ BUSINESS_UNIT|default('', true) }}</ID>
+          </AccountingChartReference>
+        </GLAccount>
+        <DimensionCodes>
+          {% for code in DIMENSION_CODES -%}
+            {{ custom_field(loop.index, code, BACKEND, line) }}
+          {%- endfor -%}
+        </DimensionCodes>
+        {% if line.credit > 0 -%}
+            <DebitCreditFlag>C</DebitCreditFlag>
+        {% else -%}
+            <DebitCreditFlag>D</DebitCreditFlag>
+        {% endif -%}
+        <SourceAccountingDate>
+          <PeriodID>{{ FISCAL_PERIOD|default('',  true) }}</PeriodID>
+          <Year>{{ FISCAL_YEAR|default('', true) }}</Year>
+          <PostDateTime>{{ format_datetime(line.create_date)|default('', true) }}</PostDateTime>
+        </SourceAccountingDate>
+        <TransactionReferenceText>{{ INVOICE_NUMBER|default('', true) }}</TransactionReferenceText>
+        <Description languageID="{{ LANGUAGE|default('', true) }}">{{ DESCRIPTION|default('', true) }}</Description>
+        <MemoAmount>
+          <AmountNumeric />
+        </MemoAmount>
+        <ExchangeRateDateTime>{{ TRANSACTION_DATE|default('', true) }}</ExchangeRateDateTime>
+        <UserArea>
+          {% for prop in PROPERTIES -%}
+            {{ custom_field(loop.index, prop, BACKEND, line) }}
+          {%- endfor -%}
+        </UserArea>
+      </JournalEntryLine>
+      {% endfor %}
+    </SourceSystemJournalEntry>
+  </DataArea>
+</{{VERB}}SourceSystemJournalEntry>

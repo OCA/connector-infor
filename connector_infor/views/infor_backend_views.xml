@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- Copyright 2018 Open Source Integrators
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record id="view_infor_backend_form" model="ir.ui.view">
+        <field name="name">infor.backend.form</field>
+        <field name="model">infor.backend</field>
+        <field name="arch" type="xml">
+            <form string="Infor Backend">
+                <header>
+                  <button name="test_infor_connnection"
+                    type="object"
+                    class="oe_highlight"
+                    string="Test Connection"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                      <button type="object" class="oe_stat_button" id="infor_messages_button" icon="fa-envelope" name="action_view_infor_messages">Messages</button>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="exchange_type"/>
+                        <field name="dbsource_id" attrs="{'required': [('exchange_type', '=', 'sql')], 'invisible': [('exchange_type', '!=', 'sql')]}"/>
+                        <field name="storage_backend_id" attrs="{'required': [('exchange_type', '=', 'file')], 'invisible': [('exchange_type', '!=', 'file')]}"/>
+                    </group>
+                    <notebook>
+                        <page string="Message Headers" name="message">
+                            <group>
+                                <field name="tenant_id"/>
+                                <field name="logical_id"/>
+                                <field name="component_id"/>
+                                <field name="confirmation_code"/>
+                                <field name="accounting_entity_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_infor_backend_tree" model="ir.ui.view">
+        <field name="name">infor.backend.tree</field>
+        <field name="model">infor.backend</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_infor_backend" model="ir.actions.act_window">
+        <field name="name">Infor Backends</field>
+        <field name="res_model">infor.backend</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_infor_backend_tree"/>
+    </record>
+</odoo>

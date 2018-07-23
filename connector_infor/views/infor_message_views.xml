@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_infor_message_form" model="ir.ui.view">
+        <field name="name">infor.message.form</field>
+        <field name="model">infor.message</field>
+        <field name="arch" type="xml">
+            <form string="Infor Message" delete="false" create="false">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="new,sent,success" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="backend_id"/>
+                        <field name="message_ident"/>
+                        <field name="create_date"/>
+                        <field name="verb"/>
+                    </group>
+                    <group>
+                        <field name="content"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_infor_message_tree" model="ir.ui.view">
+        <field name="name">infor.message.tree</field>
+        <field name="model">infor.message</field>
+        <field name="arch" type="xml">
+            <tree delete="false" create="false">
+                <field name="backend_id"/>
+                <field name="verb"/>
+                <field name="message_ident"/>
+                <field name="create_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_infor_message_search" model="ir.ui.view">
+        <field name="name">infor.message.search</field>
+        <field name="model">infor.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="verb"/>
+                <field name="backend_id"/>
+                <field name="message_ident"/>
+                <field name="state"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_infor_message" model="ir.actions.act_window">
+        <field name="name">Infor Messages</field>
+        <field name="res_model">infor.message</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_infor_message_tree"/>
+    </record>
+
+</odoo>

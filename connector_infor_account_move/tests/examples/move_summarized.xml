@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?> <SyncSourceSystemJournalEntry xsi:schemaLocation="http://schema.infor.com/InforOAGIS/2 http://schema.infor.com/2.9.0/InforOAGIS/BODs/Developer/SyncSourceSystemJournalEntry.xsd" releaseID="9.2" versionID="2.9.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.infor.com/InforOAGIS/2">
+  <ApplicationArea>
+    <Sender>
+      <LogicalID schemeVersionID="6.02.01.0188">lid://infor.sunsystems.1</LogicalID>
+      <ComponentID>Comp</ComponentID>
+      <ConfirmationCode>Always</ConfirmationCode>
+      <AuthorizationID />
+    </Sender>
+    <CreationDateTime>2018-06-18T17:07:00Z</CreationDateTime>
+    <BODID>Infor-nid:Infor:Acc::$INVOICE_ID:0?SourceSystemJournalEntry&amp;verb=Sync</BODID>
+  </ApplicationArea>
+  <DataArea>
+    <Sync>
+      <TenantID>Infor</TenantID>
+      <AccountingEntityID>$MOVE_ID</AccountingEntityID>
+      <ActionCriteria>
+        <ActionExpression actionCode="Add" />
+      </ActionCriteria>
+    </Sync>
+    <SourceSystemJournalEntry>
+      <JournalEntryHeader>
+        <JournalID accountingEntity="Acc" variationID="20180618170700000000">$INVOICE_ID</JournalID>
+        <DisplayID>$INVOICE_ID</DisplayID>
+        <BaseJournalEntryHeader>
+          <LedgerID>A</LedgerID>
+          <LedgerType>Actual</LedgerType>
+          <AccountingJournalReference>
+            <ID></ID>
+          </AccountingJournalReference>
+          <LedgerSetupReference>
+            <DocumentID>
+              <ID>A</ID>
+            </DocumentID>
+            <BookInstanceID>A</BookInstanceID>
+          </LedgerSetupReference>
+          <JournalStatus>
+            <Code>Final</Code>
+          </JournalStatus>
+        </BaseJournalEntryHeader>
+      </JournalEntryHeader>
+        <JournalEntryLine sequence="1">
+          <Amount currencyID="USD">150.00000</Amount>
+          <FunctionalAmount currencyID="USD">150.00000</FunctionalAmount>
+          <ReportingCurrencyAmount currencyID="EUR">0</ReportingCurrencyAmount>
+          <GLAccount>
+            <GLNominalAccount>PAY</GLNominalAccount>
+            <AccountingChartReference>
+              <ID>Acc</ID>
+            </AccountingChartReference>
+          </GLAccount>
+          <DimensionCodes>
+            <DimensionCode sequence="1" listID="Shape_of_the_earth">eliptic</DimensionCode>
+            <DimensionCode sequence="2" listID="Move_Line_Ref">never to hear</DimensionCode>
+            <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
+          </DimensionCodes>
+          <DebitCreditFlag>C</DebitCreditFlag>
+          <SourceAccountingDate>
+            <PeriodID></PeriodID>
+            <Year></Year>
+            <PostDateTime></PostDateTime>
+          </SourceAccountingDate>
+          <TransactionReferenceText></TransactionReferenceText>
+          <Description languageID="en_US"></Description>
+          <MemoAmount>
+            <AmountNumeric />
+          </MemoAmount>
+          <ExchangeRateDateTime></ExchangeRateDateTime>
+          <UserArea>
+            <Property sequence="1">
+              <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>
+            </Property>
+            <Property sequence="2">
+              <NameValue name="Prop_deux" type="String" unitCode="EA">not_to_be_seen</NameValue>
+            </Property>
+          </UserArea>
+        </JournalEntryLine>
+        <JournalEntryLine sequence="2">
+          <Amount currencyID="USD">400.00000</Amount>
+          <FunctionalAmount currencyID="USD">400.00000</FunctionalAmount>
+          <ReportingCurrencyAmount currencyID="EUR">0</ReportingCurrencyAmount>
+          <GLAccount>
+            <GLNominalAccount>SPR</GLNominalAccount>
+            <AccountingChartReference>
+              <ID>Acc</ID>
+            </AccountingChartReference>
+          </GLAccount>
+          <DimensionCodes>
+            <DimensionCode sequence="1" listID="Shape_of_the_earth">eliptic</DimensionCode>
+            <DimensionCode sequence="2" listID="Move_Line_Ref">never to hear</DimensionCode>
+            <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
+          </DimensionCodes>
+          <DebitCreditFlag>C</DebitCreditFlag>
+          <SourceAccountingDate>
+            <PeriodID></PeriodID>
+            <Year></Year>
+            <PostDateTime></PostDateTime>
+          </SourceAccountingDate>
+          <TransactionReferenceText></TransactionReferenceText>
+          <Description languageID="en_US"></Description>
+          <MemoAmount>
+            <AmountNumeric />
+          </MemoAmount>
+          <ExchangeRateDateTime></ExchangeRateDateTime>
+          <UserArea>
+            <Property sequence="1">
+              <NameValue name="Prop_une" type="String" unitCode="EA">One</NameValue>
+            </Property>
+            <Property sequence="2">
+              <NameValue name="Prop_deux" type="String" unitCode="EA">not_to_be_seen</NameValue>
+            </Property>
+          </UserArea>
+        </JournalEntryLine>
+    </SourceSystemJournalEntry>
+  </DataArea>
+</SyncSourceSystemJournalEntry>
