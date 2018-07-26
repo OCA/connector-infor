@@ -37,8 +37,8 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'move_id': cls.move1.odoo_id.id,
             # number is related to move_id.name
             })
-        # Create another move
-        move = cls.env['account.move'].create({
+        # Create another move use for the summarized version
+        move3 = cls.env['account.move'].create({
             'name': 'Test move 3',
             'date': '2018-06-15',
             'journal_id': cls.journal_2.id,
@@ -48,13 +48,13 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
                 (0, 0, {
                     'name': 'ying',
                     'debit': 50,
-                    'account_id': cls.account_2.id,
+                    'account_id': cls.account.id,
                     'ref': 'debit_line',
                     }),
                 (0, 0, {
                     'name': 'ying',
                     'debit': 100,
-                    'account_id': cls.account_2.id,
+                    'account_id': cls.account.id,
                     'ref': 'debit_line',
                     }),
                 (0, 0, {
@@ -69,7 +69,7 @@ class TestMoveProducer(InforTestCase, AccountMoveMixin):
             'backend_id': cls.backend.id,
             'name': 'test',
             'date': '2018-06-14 14:16:18',
-            'odoo_id': move.id,
+            'odoo_id': move3.id,
         })
         # Account move with foreign currency
         move_usd = cls.env['account.move'].create({
