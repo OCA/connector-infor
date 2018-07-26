@@ -64,7 +64,7 @@
       {% for line in JOURNAL_LINES -%}
       <JournalEntryLine sequence="{{ loop.index }}">
         <Amount currencyID="{{ line.currency_id.name or COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(abs(line.amount_currency or line.credit or line.debit)|default(0, true)) }}</Amount>
-        <FunctionalAmount currencyID="{{ COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(line.credit or line.debit|default(0, true)) }}</FunctionalAmount>
+        <FunctionalAmount currencyID="{{ COMPANY_CURRENCY|default('', true) }}">{{ "%.5f"|format(abs(line.credit or line.debit)|default(0, true)) }}</FunctionalAmount>
         <ReportingCurrencyAmount currencyID="{{ REPORTING_CURRENCY|default('', true) }}">{{ REPORTING_AMOUNT}}</ReportingCurrencyAmount>
         <GLAccount>
           <GLNominalAccount>{{ line.account_id.code|default('', true) }}</GLNominalAccount>

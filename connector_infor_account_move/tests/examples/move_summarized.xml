@@ -75,8 +75,8 @@
           </UserArea>
         </JournalEntryLine>
         <JournalEntryLine sequence="2">
-          <Amount currencyID="USD">400.00000</Amount>
-          <FunctionalAmount currencyID="USD">400.00000</FunctionalAmount>
+          <Amount currencyID="USD">150.00000</Amount>
+          <FunctionalAmount currencyID="USD">150.00000</FunctionalAmount>
           <ReportingCurrencyAmount currencyID="EUR">0</ReportingCurrencyAmount>
           <GLAccount>
             <GLNominalAccount>SPR</GLNominalAccount>
@@ -89,7 +89,7 @@
             <DimensionCode sequence="2" listID="Move_Line_Ref">never to hear</DimensionCode>
             <DimensionCode sequence="3" listID="Get_default">default</DimensionCode>
           </DimensionCodes>
-          <DebitCreditFlag>C</DebitCreditFlag>
+          <DebitCreditFlag>D</DebitCreditFlag>
           <SourceAccountingDate>
             <PeriodID></PeriodID>
             <Year></Year>

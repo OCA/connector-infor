@@ -250,15 +250,15 @@ class InforMoveProducer(Component):
         accounts = {}
         for line in move_lines:
             if line.account_id.id not in accounts:
-                accounts[line.account_id.id] = line.credit
+                accounts[line.account_id.id] = line.balance
             else:
-                accounts[line.account_id.id] += line.credit
+                accounts[line.account_id.id] += line.balance
         summarized_lines = []
         for account_id, amount in accounts.items():
             summarized_lines.append(
                 {'account_id': self.env['account.account'].browse(account_id),
-                 'credit': amount,
-                 'debit': 0,
+                 'credit': abs(amount) if amount < 0 else 0,
+                 'debit': abs(amount) if amount > 0 else 0,
                  'currency_id': None,
                  })
         context.update({
