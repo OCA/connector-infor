@@ -13,6 +13,7 @@ addons:
       - python-simplejson
       - python-serial
       - python-yaml
+      - libmysqlclient-dev
     postgresql: "9.5"
 
 env:
