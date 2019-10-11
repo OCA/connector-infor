@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/OCA/connector-infor.svg?branch=13.0)](https://travis-ci.org/OCA/connector-infor)
 [![codecov](https://codecov.io/gh/OCA/connector-infor/branch/13.0/graph/badge.svg)](https://codecov.io/gh/OCA/connector-infor)
 
-# Connector Infor 
+# Connector Infor
 
 This repository hosts all the Odoo modules to integrate it with Infor (http://www.infor.com)
 
