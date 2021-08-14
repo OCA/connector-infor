@@ -10,10 +10,10 @@ This repository hosts all the Odoo modules to integrate it with Infor (http://ww
 
 Available addons
 ----------------
-addon | version | summary
---- | --- | ---
-[connector_infor](connector_infor/) | 11.0.1.0.0 | Integration between Odoo and Infor
-[connector_infor_account_move](connector_infor_account_move/) | 11.0.1.0.0 | Infor Connector Account Move
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[connector_infor](connector_infor/) | 11.0.1.0.0 |  | Integration between Odoo and Infor
+[connector_infor_account_move](connector_infor_account_move/) | 11.0.1.0.0 |  | Infor Connector Account Move
 
 [//]: # (end addons)
 
